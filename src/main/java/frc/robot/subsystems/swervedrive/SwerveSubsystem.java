@@ -173,27 +173,6 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   /**
-   * Command to drive the robot using translative values and heading as a setpoint.
-   *
-   * @param translationX Translation in the X direction.
-   * @param translationY Translation in the Y direction.
-   * @param rotation Rotation as a value between [-1, 1] converted to radians.
-   * @return Drive command.
-   */
-  public Command simDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation)
-  {
-    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
-    return run(() -> {
-      // Make the robot move
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(translationX.getAsDouble(),
-                                                                      translationY.getAsDouble(),
-                                                                      rotation.getAsDouble() * Math.PI,
-                                                                      swerveDrive.getYaw().getRadians(),
-                                                                      swerveDrive.getMaximumVelocity()));
-    });
-  }
-
-  /**
    * Command to drive the robot using translative values and heading as angular velocity.
    *
    * @param translationX     Translation in the X direction. Cubed for smoother controls.
@@ -257,11 +236,6 @@ public class SwerveSubsystem extends SubsystemBase
 
   @Override
   public void periodic()
-  {
-  }
-
-  @Override
-  public void simulationPeriodic()
   {
   }
 
