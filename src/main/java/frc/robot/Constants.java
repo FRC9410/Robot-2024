@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.SparkMaxAlternateEncoder;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -38,6 +40,37 @@ public final class Constants
 
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
+  }
+
+  public static final class IntakeWrist
+  {
+    public static final double kGoundAngle = 100;
+    public static final double kHomeAngle = 0;
+
+    public static double kP = 0.001; 
+    public static double kI = 0;
+    public static double kD = 0; 
+    public static double kIz = 0; 
+    public static double kFF = 0; 
+    public static double kMaxOutput = 0.2; 
+    public static double kMinOutput = -0.2;
+
+    public static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
+    public static final int kCPR = 8192;
+  }
+
+  public static final class ShooterWrist
+  {
+    public static double kP = 0.001; 
+    public static double kI = 0;
+    public static double kD = 0; 
+    public static double kIz = 0; 
+    public static double kFF = 0; 
+    public static double kMaxOutput = 0.2; 
+    public static double kMinOutput = -0.2;
+
+    public static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
+    public static final int kCPR = 8192;
   }
 
   public static class OperatorConstants

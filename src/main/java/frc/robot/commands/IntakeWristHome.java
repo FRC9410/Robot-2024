@@ -5,17 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeWrist;
 import frc.robot.subsystems.Intake;
 
-public class WristUp extends Command {
+public class IntakeWristHome extends Command {
   /** Creates a new WristUp. */
   private Intake wristPrimary;
-  private double speed;
 
-  public WristUp(Intake wristPrimary, double speed) {
+  public IntakeWristHome(Intake wristPrimary) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.wristPrimary = wristPrimary;
-    this.speed = speed;
   }
 
   // Called when the command is initially scheduled.
@@ -25,7 +24,7 @@ public class WristUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wristPrimary.wristUp(speed);
+    wristPrimary.setAngle(IntakeWrist.kHomeAngle);
   }
 
   // Called once the command ends or is interrupted.
