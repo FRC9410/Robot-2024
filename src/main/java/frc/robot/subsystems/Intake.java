@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -20,7 +21,7 @@ import frc.robot.Constants.IntakeWrist;
 public class Intake extends SubsystemBase {
 
   private SparkPIDController pidController;
-  private RelativeEncoder encoder;
+  private AbsoluteEncoder encoder;
 
   CANSparkMax intake = new CANSparkMax(10, MotorType.kBrushless);
   CANSparkMax primaryWrist = new CANSparkMax(11, MotorType.kBrushless);
@@ -35,7 +36,7 @@ public class Intake extends SubsystemBase {
 
     this.pidController = primaryWrist.getPIDController();
 
-    this.encoder = primaryWrist.getAlternateEncoder(IntakeWrist.kAltEncType, IntakeWrist.kCPR);
+    this.encoder = primaryWrist.getAbsoluteEncoder(IntakeWrist.kAbsEncType);
     this.pidController.setFeedbackDevice(encoder);
 
     this.pidController.setP(IntakeWrist.kP);

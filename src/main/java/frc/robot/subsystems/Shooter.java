@@ -4,17 +4,19 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.ShooterWrist;
 
 public class Shooter extends SubsystemBase {
 private SparkPIDController pidController;
-private RelativeEncoder encoder;
+private AbsoluteEncoder encoder;
 
 CANSparkMax feeder = new CANSparkMax(20, MotorType.kBrushless);
 
@@ -36,7 +38,7 @@ CANSparkMax secondaryWrist = new CANSparkMax(32, MotorType.kBrushless);
 
     this.pidController = primaryWrist.getPIDController();
 
-    this.encoder = primaryWrist.getAlternateEncoder(ShooterWrist.kAltEncType, ShooterWrist.kCPR);
+    this.encoder = primaryWrist.getAbsoluteEncoder(ShooterWrist.kAbsEncType);
     this.pidController.setFeedbackDevice(encoder);
 
     this.pidController.setP(ShooterWrist.kP);
@@ -52,8 +54,8 @@ CANSparkMax secondaryWrist = new CANSparkMax(32, MotorType.kBrushless);
     // This method will be called once per scheduler run
   }
 
-  public void shooterOn(double speed) {
-    primaryWheel.set(speed);
+  public void setShooterVelocity(double velocity) {
+    primaryWheel.set(velocity);
   }
 
   public void shooterOff() {

@@ -5,11 +5,17 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
+  private SparkPIDController pidController;
+  private RelativeEncoder encoder;
+
   CANSparkMax primaryElevator = new CANSparkMax(41, MotorType.kBrushless);
   CANSparkMax secondaryElevator = new CANSparkMax(42, MotorType.kBrushless);
 
@@ -18,18 +24,33 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     this.secondaryElevator.follow(primaryElevator);
     this.secondaryElevator.setInverted(true);
+
+    this.pidController = primaryElevator.getPIDController();
+
+    this.encoder = primaryElevator.getAlternateEncoder(ElevatorConstants.kAltEncType, ElevatorConstants.kCPR);
+    this.pidController.setFeedbackDevice(encoder);
+
+    this.pidController.setP(ElevatorConstants.kP);
+    this.pidController.setI(ElevatorConstants.kI);
+    this.pidController.setD(ElevatorConstants.kD);
+    this.pidController.setIZone(ElevatorConstants.kIz);
+    this.pidController.setFF(ElevatorConstants.kFF);
+    this.pidController.setOutputRange(ElevatorConstants.kMinOutput, ElevatorConstants.kMaxOutput);
   }
 
   @Override
+  
   public void periodic() {
     // This method will be called once per scheduler run
   }
 
-  public void elevator(double speed) {
-    primaryElevator.set(speed);
+  public void setElevatorPosition(double distance) {
+    pidController.setReference(distance, CANSparkMax.ControlType.kPosition);
   }
+  //might change later to set distance :)
  
   public void elevatorOff() {
-    primaryElevator.set(0);
+    double currentPosition = encoder.getPosition();
+    pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
   }
 }
