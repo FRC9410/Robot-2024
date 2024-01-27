@@ -145,7 +145,7 @@ public final class Constants
     public static final double kGoundAngle = 100;
     public static final double kHomeAngle = 0;
 
-    public static double kP = 0.001; 
+    public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
@@ -155,11 +155,15 @@ public final class Constants
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
+
+    public static final double maxAcc = 25000;
+    public static final double maxVel = 11000;
+    public static final double allowedError = 0;
   }
 
   public static final class ShooterWrist
   {
-    public static double kP = 0.001; 
+    public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
@@ -174,7 +178,7 @@ public final class Constants
 
   public static final class ElevatorConstants
   {
-    public static double kP = 0.001; 
+    public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
