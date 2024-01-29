@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeWrist;
+import frc.robot.Constants.ShooterWrist;
 
 public class Intake extends SubsystemBase {
 
@@ -26,6 +27,13 @@ public class Intake extends SubsystemBase {
   CANSparkMax intake = new CANSparkMax(10, MotorType.kBrushless);
   CANSparkMax primaryWrist = new CANSparkMax(11, MotorType.kBrushless);
   CANSparkMax secondaryWrist = new CANSparkMax(12, MotorType.kBrushless);
+
+  private double TuningP = IntakeWrist.kP;
+  private double TuningD = IntakeWrist.kD;
+  private double TuningFF = IntakeWrist.kFF;
+  private double Tuningsetpoint = 0;
+  private double TuningMaxOutput = IntakeWrist.kMaxOutput;
+  private double TuningMinOutput = IntakeWrist.kMinOutput;
 
   
   public Intake() {
@@ -69,6 +77,33 @@ public class Intake extends SubsystemBase {
 
   public void intakeOff() {
     intake.set(0);
+  }
+
+  public void setPidValues(double newP, double newD, double newFF, double newSetpoint, double newOutputRange) {
+    if (Tuningsetpoint != newSetpoint) {
+      Tuningsetpoint = newSetpoint;
+      pidController.setReference(Tuningsetpoint, CANSparkMax.ControlType.kPosition);
+    }
+
+    if (TuningP != newP) {
+      TuningP = newP;
+      this.pidController.setP(TuningP);
+    }
+
+    if (TuningD != newD) {
+      TuningD = newD;
+      this.pidController.setD(TuningD);
+    }
+
+    if (TuningFF != newFF) {
+      TuningFF = newFF;
+      this.pidController.setFF(TuningFF);
+    }
+
+    if (TuningMaxOutput != newOutputRange) {
+      TuningMaxOutput = newOutputRange;
+      this.pidController.setOutputRange(-newOutputRange, newOutputRange);
+    }
   }
 
 }

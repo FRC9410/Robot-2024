@@ -16,7 +16,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.ElevatorConstants;
-
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -24,15 +28,16 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private CANSparkMax test = new CANSparkMax(56, MotorType.kBrushless);
-  private CANSparkMax test2 = new CANSparkMax(10, MotorType.kBrushless);
+  private CANSparkMax intakeWristPrimary = new CANSparkMax(11, MotorType.kBrushless);
+  private CANSparkMax intakeWristSecondary = new CANSparkMax(11, MotorType.kBrushless);
   private SparkPIDController pidController;
   private RelativeEncoder encoder;
   private double kP= 0.5;
   private double kI= 0;
   private double kD= 0;
+  private double kF= 0;
+  private double kOffset = 0;
   private double setpoint = 0.75;
-  private double enableTime = 0;
   private double maxVel = 2000;
   private double macAcc = 1500;
 
@@ -40,23 +45,45 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
 
-    this.test.restoreFactoryDefaults();
-    this.pidController = test.getPIDController();
-    this.encoder = test.getAlternateEncoder(ElevatorConstants.kAltEncType, ElevatorConstants.kCPR);
+    // ShuffleboardTab tab = Shuffleboard.getTab("Test");
+    // ShuffleboardLayout pidWidgetLayout = tab.getLayout("PIDController", BuiltInLayouts.kList);
+
+    // pidWidgetLayout.withSize(2, 5); // Set the size of the layout
+    // pidWidgetLayout.withPosition(0, 0); // Set the position of the layout
+
+    // Add widgets to the layout
+    // pidWidgetLayout.add("1 - encoder position", setpoint).withWidget(BuiltInWidgets.kDial).withPosition(0, 0);
+    // pidWidgetLayout.add("2 - setpoint", setpoint);
+    // pidWidgetLayout.add("3 - kP", kP);
+    // pidWidgetLayout.add("4 - kD", kD);
+    // pidWidgetLayout.add("5 - FF", 0);
+    // pidWidgetLayout.add("6 - kOutputRange", 0);
+
+    this.intakeWristPrimary.restoreFactoryDefaults();
+    this.intakeWristSecondary.restoreFactoryDefaults();
+    this.intakeWristPrimary.follow(intakeWristPrimary, true);
+    this.pidController = intakeWristPrimary.getPIDController();
+    this.encoder = intakeWristPrimary.getAlternateEncoder(ElevatorConstants.kAltEncType, ElevatorConstants.kCPR);
     this.pidController.setFeedbackDevice(encoder);
 
     this.pidController.setP(kP);
     this.pidController.setI(kI);
     this.pidController.setD(kD);
-    this.pidController.setOutputRange(ElevatorConstants.kMinOutput, ElevatorConstants.kMaxOutput);
+    this.pidController.setOutputRange(IntakeWrist.kMinOutput, IntakeWrist.kMaxOutput);
     SmartDashboard.putNumber("setpoint", 0);
     SmartDashboard.putNumber("kP", kP);
     SmartDashboard.putNumber("kI", kI);
     SmartDashboard.putNumber("kD", kD);
+    SmartDashboard.putNumber("kF", kF);
+
+  
+    
 
     pidController.setSmartMotionMaxAccel(IntakeWrist.maxAcc, 0);
     pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
+
+
   }
 
   @Override
@@ -65,13 +92,11 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("encoder value", encoder.getPosition());
 
-    SmartDashboard.putNumber("intake output current", test2.getOutputCurrent());
-
 
     double newSetpoint = SmartDashboard.getNumber("setpoint", 0);
     if (setpoint != newSetpoint) {
       setpoint = newSetpoint;
-      pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+      pidController.setReference(setpoint + kOffset, CANSparkMax.ControlType.kPosition);
     }
 
     double newkP = SmartDashboard.getNumber("kP", kP);
@@ -90,6 +115,12 @@ public class Robot extends TimedRobot {
     if (kD != newkD) {
       kD = newkD;
       this.pidController.setD(kD);
+    }
+
+    double newkF = SmartDashboard.getNumber("kF", kF);
+    if (kF != newkF) {
+      kF = newkF;
+      this.pidController.setD(kF);
     }
   }
 
@@ -134,6 +165,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    
   }
 
   @Override
