@@ -16,8 +16,8 @@ public class Elevator extends SubsystemBase {
   private SparkPIDController pidController;
   private RelativeEncoder encoder;
 
-  CANSparkMax primaryElevator = new CANSparkMax(41, MotorType.kBrushless);
-  CANSparkMax secondaryElevator = new CANSparkMax(42, MotorType.kBrushless);
+  CANSparkMax primaryElevator = new CANSparkMax(ElevatorConstants.kPrimaryElevatorCanId, MotorType.kBrushless);
+  CANSparkMax secondaryElevator = new CANSparkMax(ElevatorConstants.kSecondaryElevatorCanId, MotorType.kBrushless);
 
 
   /** Creates a new Elevator. */

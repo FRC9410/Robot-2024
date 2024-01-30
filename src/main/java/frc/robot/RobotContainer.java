@@ -4,25 +4,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.OIConstants;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.commands.FeedCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeWristCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.subsystems.Subsystems;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -32,7 +22,8 @@ import java.util.List;
  */
 public class RobotContainer {
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private Subsystems subsystems = new Subsystems();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -51,6 +42,16 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    new JoystickButton(driverController, Button.kA.value).toggleOnTrue(new ShootCommand(subsystems.getShooter(), 1));
+    new JoystickButton(driverController, Button.kX.value).toggleOnTrue(new FeedCommand(subsystems.getShooter(), 1));
+    new JoystickButton(driverController, Button.kY.value).toggleOnTrue(new IntakeCommand(subsystems.getIntake(), 1));
+    new JoystickButton(driverController, Button.kB.value).toggleOnTrue(new IntakeCommand(subsystems.getIntake(), -1));
+    new JoystickButton(driverController, Button.kLeftBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), 0.2));
+    new JoystickButton(driverController, Button.kRightBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), -0.2));
+  }
+
+  public Subsystems getSubsystems() {
+    return this.subsystems;
   }
 
   /**

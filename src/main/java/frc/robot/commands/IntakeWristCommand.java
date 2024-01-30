@@ -5,16 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.Constants.IntakeWrist;
 
-public class FeedIn extends Command {
-  /** Creates a new FeedIn. */
-  private Shooter feedIn;
-  private double speed;
-  public FeedIn(Shooter feedIn, double speed) {
+public class IntakeWristCommand extends Command {
+  /** Creates a new WristUp. */
+  private Intake intake;
+  private double position;
+
+  public IntakeWristCommand(Intake intake, double position) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.feedIn = feedIn;
-    this.speed = speed;
+    this.intake = intake;
+    this.position = position;
   }
 
   // Called when the command is initially scheduled.
@@ -24,13 +26,13 @@ public class FeedIn extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feedIn.feedOn(speed);
+    intake.setAngle(this.position);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    feedIn.feedOff();
+    intake.wristOff();
   }
 
   // Returns true when the command should end.

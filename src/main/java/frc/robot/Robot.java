@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends TimedRobot {
@@ -40,6 +41,12 @@ public class Robot extends TimedRobot {
   private double setpoint = 0.75;
   private double maxVel = 2000;
   private double macAcc = 1500;
+
+  private static final String intakeWristOption = "Intake wrist";
+  private static final String shooterWristOption = "Shooter wrist";
+  private static final String elevatorOption = "Elevator";
+  private String selected;
+  private final SendableChooser<String> chooser = new SendableChooser<>();
 
   @Override
   public void robotInit() {
@@ -70,13 +77,19 @@ public class Robot extends TimedRobot {
     this.pidController.setI(kI);
     this.pidController.setD(kD);
     this.pidController.setOutputRange(IntakeWrist.kMinOutput, IntakeWrist.kMaxOutput);
+
+    chooser.setDefaultOption(intakeWristOption, intakeWristOption);
+    chooser.addOption(shooterWristOption, shooterWristOption);
+    chooser.addOption(elevatorOption, elevatorOption);
+    SmartDashboard.putData("tuner chooser", chooser);
+
     SmartDashboard.putNumber("setpoint", 0);
     SmartDashboard.putNumber("kP", kP);
     SmartDashboard.putNumber("kI", kI);
     SmartDashboard.putNumber("kD", kD);
     SmartDashboard.putNumber("kF", kF);
 
-  
+    
     
 
     pidController.setSmartMotionMaxAccel(IntakeWrist.maxAcc, 0);

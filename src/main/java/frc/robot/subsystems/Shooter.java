@@ -4,28 +4,28 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.ShooterWrist;
+import frc.robot.Constants.RobotConstants;
 
 public class Shooter extends SubsystemBase {
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
 
-  CANSparkMax feeder = new CANSparkMax(20, MotorType.kBrushless);
+  TalonFX feeder = new TalonFX(ShooterWrist.kFeederCanId, RobotConstants.kCtreCanBusName);
 
-  CANSparkMax primaryWheel = new CANSparkMax(21, MotorType.kBrushless);
-  CANSparkMax secondaryWheel = new CANSparkMax(22, MotorType.kBrushless);
+  TalonFX primaryWheel = new TalonFX(ShooterWrist.kPrimaryWheelCanId, RobotConstants.kCtreCanBusName);
+  TalonFX secondaryWheel = new TalonFX(ShooterWrist.kSecondaryWheelCanId, RobotConstants.kCtreCanBusName);
 
-  CANSparkMax primaryWrist = new CANSparkMax(31, MotorType.kBrushless);
-  CANSparkMax secondaryWrist = new CANSparkMax(32, MotorType.kBrushless);
+  CANSparkMax primaryWrist = new CANSparkMax(ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
+  CANSparkMax secondaryWrist = new CANSparkMax(ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
 
   private double TuningP = ShooterWrist.kP;
   private double TuningD = ShooterWrist.kD;
@@ -36,8 +36,7 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
-    this.secondaryWheel.follow(primaryWheel);
-    this.secondaryWheel.setInverted(true);
+    secondaryWheel.setControl(new Follower(primaryWheel.getDeviceID(), true));
 
     this.secondaryWrist.follow(primaryWrist);
     this.secondaryWrist.setInverted(true);

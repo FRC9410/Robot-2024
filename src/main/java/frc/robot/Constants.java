@@ -23,6 +23,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants
 {
+  public static final class RobotConstants {
+    public static final String kCtreCanBusName = "canivore";
+  }
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -142,6 +145,9 @@ public final class Constants
 
   public static final class IntakeWrist
   {
+    public static final int kIntakeCanId = 10;
+    public static final int kPrimaryWristCanId = 11;
+    public static final int kSecondaryWristCanId = 12;
     public static final double kGoundAngle = 100;
     public static final double kHomeAngle = 0;
 
@@ -163,6 +169,13 @@ public final class Constants
 
   public static final class ShooterWrist
   {
+    public static final int kFeederCanId = 20;
+    public static final int kPrimaryWristCanId = 21;
+    public static final int kSecondaryWristCanId = 22;
+    
+    public static final int kPrimaryWheelCanId = 31;
+    public static final int kSecondaryWheelCanId = 32;
+
     public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
@@ -178,6 +191,8 @@ public final class Constants
 
   public static final class ElevatorConstants
   {
+    public static final int kPrimaryElevatorCanId = 31;
+    public static final int kSecondaryElevatorCanId = 32;
     public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
