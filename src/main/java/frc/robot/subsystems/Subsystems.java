@@ -6,14 +6,14 @@ package frc.robot.subsystems;
 
 /** Add your docs here. */
 public class Subsystems {
-    private Elevator elevator;
+    // private Elevator elevator;
     private Shooter shooter;
     private Intake intake;
 
     public Subsystems() {
         intake = new Intake();
         shooter = new Shooter();
-        elevator = new Elevator();
+        // elevator = new Elevator();
     }
 
     public Intake getIntake(){
@@ -24,7 +24,7 @@ public class Subsystems {
         return shooter;
     }
 
-    public Elevator getElevator(){
-        return elevator;
-    }
+    // public Elevator getElevator(){
+    //     return elevator;
+    // }
 }

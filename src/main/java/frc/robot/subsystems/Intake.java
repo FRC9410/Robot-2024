@@ -74,31 +74,12 @@ public class Intake extends SubsystemBase {
     intake.set(0);
   }
 
-  public void setPidValues(double newP, double newD, double newFF, double newSetpoint, double newOutputRange) {
-    if (Tuningsetpoint != newSetpoint) {
-      Tuningsetpoint = newSetpoint;
-      pidController.setReference(Tuningsetpoint, CANSparkMax.ControlType.kPosition);
-    }
+  public SparkPIDController getPIDController() {
+    return this.pidController;
+  }
 
-    if (TuningP != newP) {
-      TuningP = newP;
-      this.pidController.setP(TuningP);
-    }
-
-    if (TuningD != newD) {
-      TuningD = newD;
-      this.pidController.setD(TuningD);
-    }
-
-    if (TuningFF != newFF) {
-      TuningFF = newFF;
-      this.pidController.setFF(TuningFF);
-    }
-
-    if (TuningMaxOutput != newOutputRange) {
-      TuningMaxOutput = newOutputRange;
-      this.pidController.setOutputRange(-newOutputRange, newOutputRange);
-    }
+  public double getEncoderPosition() {
+    return encoder.getPosition();
   }
 
 }
