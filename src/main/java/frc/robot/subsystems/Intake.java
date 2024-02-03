@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,10 +33,12 @@ public class Intake extends SubsystemBase {
 
   
   public Intake() {
+    this.primaryWrist.restoreFactoryDefaults();
+    this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist);
     this.secondaryWrist.setInverted(true);
-
-    this.primaryWrist.restoreFactoryDefaults();
+    this.primaryWrist.setIdleMode(IdleMode.kBrake);
+    this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
     this.pidController = primaryWrist.getPIDController();
 
@@ -56,22 +59,22 @@ public class Intake extends SubsystemBase {
   }
 
   public void setAngle(double angle) {
-      pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+      this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
   }
   
 
   public void wristOff() {
     double currentPosition = encoder.getPosition();
-    pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
   }
 
   public void intakeOn(double speed) {
-    intake.set(speed);
+    this.intake.set(speed);
   }
 
 
   public void intakeOff() {
-    intake.set(0);
+    this.intake.set(0);
   }
 
   public SparkPIDController getPIDController() {
@@ -79,7 +82,11 @@ public class Intake extends SubsystemBase {
   }
 
   public double getEncoderPosition() {
-    return encoder.getPosition();
+    return this.encoder.getPosition();
+  }
+
+  public double getRollerPowerDraw() {
+    return this.intake.getSupplyCurrent().getValueAsDouble();
   }
 
 }

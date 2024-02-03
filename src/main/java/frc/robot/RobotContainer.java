@@ -42,10 +42,10 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController, Button.kA.value).toggleOnTrue(new ShootCommand(subsystems.getShooter(), 1));
-    new JoystickButton(driverController, Button.kX.value).toggleOnTrue(new FeedCommand(subsystems.getShooter(), 1));
-    new JoystickButton(driverController, Button.kY.value).toggleOnTrue(new IntakeCommand(subsystems.getIntake(), 1));
-    new JoystickButton(driverController, Button.kB.value).toggleOnTrue(new IntakeCommand(subsystems.getIntake(), -1));
+    new JoystickButton(driverController, Button.kA.value).whileTrue(new ShootCommand(subsystems.getShooter(), 1));
+    new JoystickButton(driverController, Button.kX.value).whileTrue(new FeedCommand(subsystems.getShooter(), 1));
+    new JoystickButton(driverController, Button.kY.value).whileTrue(new IntakeCommand(subsystems.getIntake(), 1));
+    new JoystickButton(driverController, Button.kB.value).whileTrue(new IntakeCommand(subsystems.getIntake(), -1));
     new JoystickButton(driverController, Button.kLeftBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), 0.2));
     new JoystickButton(driverController, Button.kRightBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), -0.2));
   }

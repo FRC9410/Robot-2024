@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,8 +23,12 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
+    this.primaryElevator.restoreFactoryDefaults();
+    this.secondaryElevator.restoreFactoryDefaults();
     this.secondaryElevator.follow(primaryElevator);
     this.secondaryElevator.setInverted(true);
+    this.primaryElevator.setIdleMode(IdleMode.kBrake);
+    this.secondaryElevator.setIdleMode(IdleMode.kBrake);
 
     this.pidController = primaryElevator.getPIDController();
 
@@ -45,12 +50,12 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setElevatorPosition(double distance) {
-    pidController.setReference(distance, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(distance, CANSparkMax.ControlType.kPosition);
   }
   //might change later to set distance :)
  
   public void elevatorOff() {
     double currentPosition = encoder.getPosition();
-    pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
   }
 }

@@ -24,13 +24,13 @@ public class FeedCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.feedOn(speed);
+    this.shooter.feedOn(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.feedOff();
+    this.shooter.feedOff();
   }
 
   // Returns true when the command should end.

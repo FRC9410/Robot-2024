@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -36,12 +37,12 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
-    secondaryWheel.setControl(new Follower(primaryWheel.getDeviceID(), true));
-
-    this.secondaryWrist.follow(primaryWrist);
-    this.secondaryWrist.setInverted(true);
-
     this.primaryWrist.restoreFactoryDefaults();
+    this.secondaryWrist.restoreFactoryDefaults();
+    this.secondaryWrist.setInverted(true);
+    this.primaryWrist.setIdleMode(IdleMode.kBrake);
+    this.secondaryWrist.setIdleMode(IdleMode.kBrake);
+
 
     this.pidController = primaryWrist.getPIDController();
 
@@ -62,28 +63,30 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity(double velocity) {
-    primaryWheel.set(velocity);
+    this.primaryWheel.set(velocity);
+    this.secondaryWheel.set(velocity * 0.8);
   }
 
   public void shooterOff() {
-    primaryWheel.set(0);
+    this.primaryWheel.set(0);
+    this.secondaryWheel.set(0);
   }
 
   public void setWristAngle(double angle) {
-    pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
   }
 
   public void wristOff() {
     double currentPosition = encoder.getPosition();
-    pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
   }
 
   public void feedOn(double speed) {
-    feeder.set(speed);
+    this.feeder.set(speed);
   }
 
   public void feedOff() {
-    feeder.set(0);
+    this.feeder.set(0);
   }
 
   public SparkPIDController getPIDController() {
@@ -91,7 +94,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getEncoderPosition() {
-    return encoder.getPosition();
+    return this.encoder.getPosition();
   }
 
 }

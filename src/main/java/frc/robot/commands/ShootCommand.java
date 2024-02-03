@@ -24,13 +24,13 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.setShooterVelocity(speed);
+    this.shooter.setShooterVelocity(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.shooterOff();
+    this.shooter.shooterOff();
   }
 
   // Returns true when the command should end.
