@@ -35,22 +35,26 @@ public class Intake extends SubsystemBase {
   public Intake() {
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
-    this.secondaryWrist.follow(primaryWrist);
-    this.secondaryWrist.setInverted(true);
+    this.secondaryWrist.follow(primaryWrist, true);
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
     this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
     this.pidController = primaryWrist.getPIDController();
 
     this.encoder = primaryWrist.getAbsoluteEncoder(IntakeWrist.kAbsEncType);
+    this.encoder.setZeroOffset(IntakeWrist.kOffset);
     this.pidController.setFeedbackDevice(encoder);
 
     this.pidController.setP(IntakeWrist.kP);
     this.pidController.setI(IntakeWrist.kI);
     this.pidController.setD(IntakeWrist.kD);
-    this.pidController.setIZone(IntakeWrist.kIz);
-    this.pidController.setFF(IntakeWrist.kFF);
     this.pidController.setOutputRange(IntakeWrist.kMinOutput, IntakeWrist.kMaxOutput);
+    
+    pidController.setSmartMotionMaxAccel(IntakeWrist.maxAcc, 0);
+    pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
+    pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
+
+    this.pidController.setReference(0.05, CANSparkMax.ControlType.kPosition);
   }
 
   @Override
@@ -64,8 +68,7 @@ public class Intake extends SubsystemBase {
   
 
   public void wristOff() {
-    double currentPosition = encoder.getPosition();
-    this.pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
   }
 
   public void intakeOn(double speed) {

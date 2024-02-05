@@ -6,11 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.CenterNoteCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.IntakeWristCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootNoteCommand;
+import frc.robot.commands.StageFeederCommand;
 import frc.robot.subsystems.Subsystems;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -42,12 +47,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(driverController, Button.kA.value).whileTrue(new ShootCommand(subsystems.getShooter(), 1));
-    new JoystickButton(driverController, Button.kX.value).whileTrue(new FeedCommand(subsystems.getShooter(), 1));
-    new JoystickButton(driverController, Button.kY.value).whileTrue(new IntakeCommand(subsystems.getIntake(), 1));
-    new JoystickButton(driverController, Button.kB.value).whileTrue(new IntakeCommand(subsystems.getIntake(), -1));
-    new JoystickButton(driverController, Button.kLeftBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), 0.2));
-    new JoystickButton(driverController, Button.kRightBumper.value).onTrue(new IntakeWristCommand(subsystems.getIntake(), -0.2));
+    new JoystickButton(driverController, Button.kLeftBumper.value).whileTrue(new CenterNoteCommand(subsystems));
+    new JoystickButton(driverController, Button.kRightBumper.value).whileTrue(new ShootNoteCommand(subsystems));
   }
 
   public Subsystems getSubsystems() {

@@ -59,12 +59,13 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    System.out.println(this.feeder.getSupplyCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 
   public void setShooterVelocity(double velocity) {
     this.primaryWheel.set(velocity);
-    this.secondaryWheel.set(velocity * 0.8);
+    this.secondaryWheel.set(velocity * -0.90);
   }
 
   public void shooterOff() {
@@ -95,6 +96,10 @@ public class Shooter extends SubsystemBase {
 
   public double getEncoderPosition() {
     return this.encoder.getPosition();
+  }
+
+  public double getFeederPowerDraw() {
+    return this.feeder.getSupplyCurrent().getValueAsDouble();
   }
 
 }

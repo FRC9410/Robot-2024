@@ -151,13 +151,16 @@ public final class Constants
     public static final double kGoundAngle = 100;
     public static final double kHomeAngle = 0;
 
-    public static double kP = 0.5; 
+    public static double kP = 5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
     public static double kFF = 0; 
-    public static double kMaxOutput = 0.2; 
-    public static double kMinOutput = -0.2;
+    public static double kMaxOutput = 1; 
+    public static double kMinOutput = -1;
+    public static double kOffset = 0.785;
+    public static double kMaxRotation = 0.56;
+    public static double kMinRotation = 0.03;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
@@ -170,11 +173,11 @@ public final class Constants
   public static final class ShooterWrist
   {
     public static final int kFeederCanId = 20;
-    public static final int kPrimaryWristCanId = 21;
-    public static final int kSecondaryWristCanId = 22;
+    public static final int kPrimaryWristCanId = 31;
+    public static final int kSecondaryWristCanId = 32;
     
-    public static final int kPrimaryWheelCanId = 31;
-    public static final int kSecondaryWheelCanId = 32;
+    public static final int kPrimaryWheelCanId = 21;
+    public static final int kSecondaryWheelCanId = 22;
 
     public static double kP = 0.5; 
     public static double kI = 0;

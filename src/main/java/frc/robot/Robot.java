@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    // tuning = new Tuning(robotContainer.getSubsystems());
   }
 
   @Override
@@ -66,12 +67,12 @@ public class Robot extends TimedRobot {
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
     
-    tuning = new Tuning(robotContainer.getSubsystems());
   }
 
   @Override
   public void testPeriodic() {
-    tuning.updateTuning(robotContainer.getSubsystems());
+    // tuning.updateTuning(robotContainer.getSubsystems());
+
   }
 
   @Override

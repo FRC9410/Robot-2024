@@ -12,20 +12,22 @@ public class IntakeCommand extends Command {
   /** Creates a new IntakeIn. */
   private Intake intake;
   private double speed;
-  private double startTime;
+  private Timer timer;
+  private double maxCurrentDraw;
 
-
-  public IntakeCommand(Intake intake, double speed) {
+  public IntakeCommand(Intake intake, double speed, double maxCurrentDraw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
-
+    this.timer = new Timer();
+    this.maxCurrentDraw = maxCurrentDraw;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.startTime = Timer.getFPGATimestamp();
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,7 +45,7 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Timer.getFPGATimestamp() > startTime +1 && intake.getRollerPowerDraw() > 15) {
+    if (this.speed < 0 && this.timer.hasElapsed(0.5) && this.intake.getRollerPowerDraw() > this.maxCurrentDraw) {
       return true;
     }
     return false;

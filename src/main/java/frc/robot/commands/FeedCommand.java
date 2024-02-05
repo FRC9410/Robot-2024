@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
@@ -11,15 +12,23 @@ public class FeedCommand extends Command {
   /** Creates a new FeedIn. */
   private Shooter shooter;
   private double speed;
-  public FeedCommand(Shooter shooter, double speed) {
+  private Timer timer;
+  private double maxCurrentDraw;
+
+  public FeedCommand(Shooter shooter, double speed, double maxCurrentDraw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;
     this.speed = speed;
+    this.timer = new Timer();
+    this.maxCurrentDraw = maxCurrentDraw;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,6 +45,9 @@ public class FeedCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (this.speed < 0 && this.timer.hasElapsed(0.5) && this.shooter.getFeederPowerDraw() > this.maxCurrentDraw) {
+      return true;
+    }
     return false;
   }
 }

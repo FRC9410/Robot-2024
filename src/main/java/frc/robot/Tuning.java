@@ -20,8 +20,7 @@ public class Tuning {
     private double kI= 0;
     private double kD= 0;
     private double kF= 0;
-    private double kOffset = 0;
-    private double setpoint = 0.75;
+    private double setpoint;
     // private double maxVel = 2000;
     // private double macAcc = 1500;
 
@@ -33,6 +32,7 @@ public class Tuning {
 
     public Tuning(Subsystems subsystems) {
         this.pidController = this.getPidController(subsystems, "Intake wrist");
+        this.setpoint = this.getEncoderPosition(subsystems, "Intake wrist");
 
         this.pidController.setP(kP);
         this.pidController.setI(kI);
@@ -43,26 +43,24 @@ public class Tuning {
         // chooser.addOption(shooterWristOption, shooterWristOption);
         // chooser.addOption(elevatorOption, elevatorOption);
         // SmartDashboard.putData("tuner chooser", chooser);
-        SmartDashboard.putNumber("setpoint", 0);
-        SmartDashboard.putNumber("kP", kP);
-        SmartDashboard.putNumber("kI", kI);
-        SmartDashboard.putNumber("kD", kD);
-        SmartDashboard.putNumber("kF", kF);
 
         pidController.setSmartMotionMaxAccel(IntakeWrist.maxAcc, 0);
         pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
         pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
+        
+        SmartDashboard.putNumber("setpoint", setpoint);
+        SmartDashboard.putNumber("kP", kP);
+        SmartDashboard.putNumber("kI", kI);
+        SmartDashboard.putNumber("kD", kD);
+        SmartDashboard.putNumber("kF", kF);
+        SmartDashboard.putNumber("encoder value", this.getEncoderPosition(subsystems, "Intake wrist"));
     }
 
     public void updateTuning(Subsystems subsystems) {
-
-        SmartDashboard.putNumber("encoder value", this.getEncoderPosition(subsystems, "Intake wrist"));
-
-
         double newSetpoint = SmartDashboard.getNumber("setpoint", 0);
         if (setpoint != newSetpoint) {
         setpoint = newSetpoint;
-        pidController.setReference(setpoint + kOffset, CANSparkMax.ControlType.kPosition);
+        pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
         }
 
         double newkP = SmartDashboard.getNumber("kP", kP);
