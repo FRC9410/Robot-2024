@@ -64,8 +64,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity(double velocity) {
-    this.primaryWheel.set(velocity);
-    this.secondaryWheel.set(velocity * -0.90);
+    this.primaryWheel.setVoltage(velocity * 12);
+    this.secondaryWheel.setVoltage(velocity * -0.90 * 12);
+
   }
 
   public void shooterOff() {

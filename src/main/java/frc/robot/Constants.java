@@ -160,7 +160,7 @@ public final class Constants
     public static double kMinOutput = -1;
     public static double kOffset = 0.785;
     public static double kMaxRotation = 0.56;
-    public static double kMinRotation = 0.03;
+    public static double kMinRotation = 0.02;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
