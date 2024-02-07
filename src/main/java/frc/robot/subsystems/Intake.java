@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
   private double Tuningsetpoint = 0;
   private double TuningMaxOutput = IntakeWrist.kMaxOutput;
 
-  private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
+  private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, -6, 0, false, false, false);
 
   
   public Intake() {
@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
 
-    this.pidController.setReference(0.05, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
 
     setConfigs(intake);
   }
@@ -67,6 +67,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println(intake.getSupplyCurrent());
   }
 
   public void setAngle(double angle) {
@@ -102,7 +103,7 @@ public class Intake extends SubsystemBase {
   private static void setConfigs(TalonFX motor) {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
+    configs.Slot0.kP = 0.3; // An error of 1 rotation per second results in 2V output
     configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
     configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second

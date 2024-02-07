@@ -158,9 +158,9 @@ public final class Constants
     public static double kFF = 0; 
     public static double kMaxOutput = 1; 
     public static double kMinOutput = -1;
-    public static double kOffset = 0.785;
-    public static double kMaxRotation = 0.56;
-    public static double kMinRotation = 0.02;
+    public static double kOffset = 0.7;
+    public static double kMaxRotation = 0.64;
+    public static double kMinRotation = 0.11;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;

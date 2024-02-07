@@ -18,7 +18,7 @@ public class IntakeNoteCommand extends ParallelRaceGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new IntakeWristCommand(subsystems.getIntake(), IntakeWrist.kMaxRotation),
-      new IntakeCommand(subsystems.getIntake(), -0.6, 20)
+      new IntakeCommand(subsystems.getIntake(), -65, 2)
     );
   }
 }

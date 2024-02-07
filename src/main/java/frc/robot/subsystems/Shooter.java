@@ -26,9 +26,9 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
 
-  private static final VelocityVoltage voltageVelocity = new VelocityVoltage(10000, 10000, true, 0, 0, false, false, false);
+  private static final VelocityVoltage voltageVelocity = new VelocityVoltage(86, 86, true, 0, 0, false, false, false);
     /* Start at velocity 0, no feed forward, use slot 1 */
-    private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
+    private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
     /* Keep a neutral out so we can disable the motor */
     private static final NeutralOut brake = new NeutralOut();
 
