@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
@@ -31,6 +34,8 @@ public class Intake extends SubsystemBase {
   private double Tuningsetpoint = 0;
   private double TuningMaxOutput = IntakeWrist.kMaxOutput;
 
+  private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(0, 0, 0, 1, false, false, false);
+
   
   public Intake() {
     this.primaryWrist.restoreFactoryDefaults();
@@ -55,6 +60,8 @@ public class Intake extends SubsystemBase {
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
 
     this.pidController.setReference(0.05, CANSparkMax.ControlType.kPosition);
+
+    setConfigs(intake);
   }
 
   @Override
@@ -71,8 +78,8 @@ public class Intake extends SubsystemBase {
     this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
   }
 
-  public void intakeOn(double speed) {
-    this.intake.set(speed);
+  public void intakeOn(double velocity) {
+    this.intake.setControl(torqueVelocity.withVelocity(velocity));
   }
 
 
@@ -92,4 +99,29 @@ public class Intake extends SubsystemBase {
     return this.intake.getSupplyCurrent().getValueAsDouble();
   }
 
+  private static void setConfigs(TalonFX motor) {
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
+    configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
+    configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
+    configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
+    configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+    // Peak output of 8 volts
+    configs.Voltage.PeakForwardVoltage = 12;
+    configs.Voltage.PeakReverseVoltage = -12;
+
+    motor.getConfigurator().apply(configs);
+  }
+
+  public void setEnableIdleMode() {
+    intake.setNeutralMode(NeutralModeValue.Brake);
+    primaryWrist.setIdleMode(IdleMode.kBrake);
+    secondaryWrist.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setDisableIdleMode() {
+    intake.setNeutralMode(NeutralModeValue.Coast);
+    primaryWrist.setIdleMode(IdleMode.kCoast);
+    secondaryWrist.setIdleMode(IdleMode.kCoast);
+  }
 }

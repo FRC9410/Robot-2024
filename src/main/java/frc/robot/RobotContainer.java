@@ -74,4 +74,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
+  public void setEnabledIdleMode() {
+    subsystems.getShooter().setEnableIdleMode();
+    subsystems.getIntake().setEnableIdleMode();
+  }
+
+  public void setDisableIdleMode() {
+    subsystems.getShooter().setDisableIdleMode();
+    subsystems.getIntake().setDisableIdleMode();
+  }
 }

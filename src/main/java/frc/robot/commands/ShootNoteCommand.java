@@ -21,10 +21,10 @@ public class ShootNoteCommand extends SequentialCommandGroup {
     addCommands(
       new ParallelRaceGroup(
         new WaitCommand(1.5),
-        new ShootCommand(subsystems.getShooter(), -1)
+        new ShootCommand(subsystems.getShooter(), 90)
       ),
       new ParallelCommandGroup(
-        new ShootCommand(subsystems.getShooter(), -1),
+        new ShootCommand(subsystems.getShooter(), 90),
         new FeedCommand(subsystems.getShooter(), -1, 15),
         new IntakeCommand(subsystems.getIntake(), 1, 15)
       )

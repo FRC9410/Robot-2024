@@ -26,13 +26,18 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    robotContainer.setEnabledIdleMode();
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    robotContainer.setDisableIdleMode();
+  }
 
   @Override
   public void autonomousInit() {
@@ -77,4 +82,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {}
+  
 }
