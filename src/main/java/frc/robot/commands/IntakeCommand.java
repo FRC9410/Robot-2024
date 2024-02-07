@@ -13,14 +13,16 @@ public class IntakeCommand extends Command {
   private Intake intake;
   private double speed;
   private Timer timer;
-  private double maxCurrentDraw;
+  private double minCurrentDraw;
+  private double feedforward;
 
-  public IntakeCommand(Intake intake, double speed, double maxCurrentDraw) {
+  public IntakeCommand(Intake intake, double speed, double feedforward, double minCurrentDraw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
     this.timer = new Timer();
-    this.maxCurrentDraw = maxCurrentDraw;
+    this.minCurrentDraw = minCurrentDraw;
+    this.feedforward = feedforward;
   }
 
   // Called when the command is initially scheduled.
@@ -33,7 +35,7 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.intake.intakeOn(speed);
+    this.intake.intakeOn(speed, feedforward);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,7 +47,7 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (this.speed < 0 && this.timer.hasElapsed(0.5) && this.intake.getRollerPowerDraw() < this.maxCurrentDraw) {
+    if (this.speed < 0 && this.timer.hasElapsed(0.5) && this.intake.getRollerPowerDraw() < this.minCurrentDraw) {
       return true;
     }
     return false;

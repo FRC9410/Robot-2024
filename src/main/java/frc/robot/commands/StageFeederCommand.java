@@ -14,17 +14,17 @@ import frc.robot.subsystems.Subsystems;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StageFeederCommand extends SequentialCommandGroup {
   /** Creates a new StageFeederCommand. */
-  public StageFeederCommand(Subsystems subsystems, double speed, double maxCurrentDraw, double time) {
+  public StageFeederCommand(Subsystems subsystems, double speed, double feedforward, double minCurrentDraw, double time) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ParallelRaceGroup(
-        new FeedCommand(subsystems.getShooter(), speed, maxCurrentDraw),
+        new FeedCommand(subsystems.getShooter(), speed, feedforward,minCurrentDraw),
       new WaitCommand(time)
       ),
       new ParallelRaceGroup(
-        new FeedCommand(subsystems.getShooter(), -0.3, 5),
-        new IntakeCommand(subsystems.getIntake(), 0.3, 5)
+        new FeedCommand(subsystems.getShooter(), -30, -3, 2),
+        new IntakeCommand(subsystems.getIntake(), 30, 3, 2)
       )
     );
   }

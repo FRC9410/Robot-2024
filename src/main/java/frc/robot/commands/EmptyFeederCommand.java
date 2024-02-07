@@ -16,8 +16,8 @@ public class EmptyFeederCommand extends ParallelRaceGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FeedCommand(subsystems.getShooter(), 0.3, 5),
-      new IntakeCommand(subsystems.getIntake(), -0.3, 5)
+      new FeedCommand(subsystems.getShooter(), 40, 3, 2),
+      new IntakeCommand(subsystems.getIntake(), -40, -3, 2)
     );
   }
 }

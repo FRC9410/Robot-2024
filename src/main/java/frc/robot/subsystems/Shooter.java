@@ -70,22 +70,18 @@ public class Shooter extends SubsystemBase {
     this.pidController.setOutputRange(ShooterWrist.kMinOutput, ShooterWrist.kMaxOutput);
 
 
-    setConfigs(primaryWheel);
-    setConfigs(secondaryWheel);
+    setShooterConfigs(primaryWheel);
+    setShooterConfigs(secondaryWheel);
+    setFeederConfigs(feeder);
 
   }
 
   @Override
   public void periodic() {
-    System.out.println(this.primaryWheel.getVelocity());
     // This method will be called once per scheduler run
   }
 
   public void setShooterVelocity(double velocity) {
-   // this.primaryWheel.setVoltage(velocity * 12);
-   // this.secondaryWheel.setVoltage(velocity * -0.90 * 12);
-   System.out.println(":)");
-
     this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity));
     this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity * 0.95));
   }
@@ -104,8 +100,8 @@ public class Shooter extends SubsystemBase {
     this.pidController.setReference(currentPosition, CANSparkMax.ControlType.kPosition);
   }
 
-  public void feedOn(double speed) {
-    this.feeder.set(speed);
+  public void feedOn(double velocity, double feedforward) {
+    this.feeder.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
   public void feedOff() {
@@ -124,10 +120,24 @@ public class Shooter extends SubsystemBase {
     return this.feeder.getSupplyCurrent().getValueAsDouble();
   }
 
-  private static void setConfigs(TalonFX motor) {
+  private static void setShooterConfigs(TalonFX motor) {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
+    configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
+    configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
+    configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+    // Peak output of 8 volts
+    configs.Voltage.PeakForwardVoltage = 12;
+    configs.Voltage.PeakReverseVoltage = -12;
+
+    motor.getConfigurator().apply(configs);
+  }
+
+  private static void setFeederConfigs(TalonFX motor) {
+    TalonFXConfiguration configs = new TalonFXConfiguration();
+    /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
+    configs.Slot0.kP = 0.3; // An error of 1 rotation per second results in 2V output
     configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
     configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second

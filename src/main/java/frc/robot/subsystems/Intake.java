@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
   private double Tuningsetpoint = 0;
   private double TuningMaxOutput = IntakeWrist.kMaxOutput;
 
-  private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, -6, 0, false, false, false);
+  private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
 
   
   public Intake() {
@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
 
     this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
 
-    setConfigs(intake);
+    setIntakeConfigs(intake);
   }
 
   @Override
@@ -79,8 +79,8 @@ public class Intake extends SubsystemBase {
     this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
   }
 
-  public void intakeOn(double velocity) {
-    this.intake.setControl(torqueVelocity.withVelocity(velocity));
+  public void intakeOn(double velocity, double feedforward) {
+    this.intake.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
 
@@ -100,7 +100,7 @@ public class Intake extends SubsystemBase {
     return this.intake.getSupplyCurrent().getValueAsDouble();
   }
 
-  private static void setConfigs(TalonFX motor) {
+  private static void setIntakeConfigs(TalonFX motor) {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
     configs.Slot0.kP = 0.3; // An error of 1 rotation per second results in 2V output
