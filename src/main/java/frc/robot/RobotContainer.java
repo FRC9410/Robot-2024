@@ -31,7 +31,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -42,8 +41,6 @@ import frc.robot.commands.IntakeNoteCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootNoteCommand;
 import frc.robot.commands.ShooterWristCommand;
-import frc.robot.commands.VoltageFeedCommand;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
@@ -55,7 +52,6 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0); // My joystick
   private Subsystems subsystems = new Subsystems();
   private CANdle candle = new CANdle(23, "rio");
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -66,8 +62,8 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
-   drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+   subsystems.getDrivetrain().setDefaultCommand( // Drivetrain will execute this command periodically
+        subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
            .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
            .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
        ));
@@ -77,12 +73,12 @@ public class RobotContainer {
     //     .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
 
     // reset the field-centric heading on start press
-    driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driverController.start().onTrue(subsystems.getDrivetrain().runOnce(() -> subsystems.getDrivetrain().seedFieldRelative()));
 
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+      subsystems.getDrivetrain().seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
-    drivetrain.registerTelemetry(logger::telemeterize);
+    subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
 
    driverController.y().whileTrue(new IntakeNoteCommand(subsystems)); //.onFalse(new CenterNoteCommand(subsystems));
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));

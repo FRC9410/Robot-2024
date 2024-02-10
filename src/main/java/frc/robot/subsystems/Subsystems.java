@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.TunerConstants;
+
 /** Add your docs here. */
 public class Subsystems {
+    private CommandSwerveDrivetrain drivetrain;
     // private Elevator elevator;
     private Shooter shooter;
     private Intake intake;
@@ -13,6 +16,8 @@ public class Subsystems {
     private Music music;
 
     public Subsystems() {
+        
+        this.drivetrain = TunerConstants.DriveTrain;
         this.intake = new Intake();
         this.shooter = new Shooter();
         this.leds = new Leds();
@@ -20,6 +25,10 @@ public class Subsystems {
         // elevator = new Elevator();
     }
 
+    public CommandSwerveDrivetrain getDrivetrain() {
+        return drivetrain;
+    }
+    
     public Intake getIntake() {
         return intake;
     }

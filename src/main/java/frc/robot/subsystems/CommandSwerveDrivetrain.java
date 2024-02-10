@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -52,5 +53,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    public TalonFX[] getMotors() {
+        TalonFX[] motors = new TalonFX[8];
+        motors[0] = this.Modules[0].getDriveMotor();
+        motors[1] = this.Modules[0].getSteerMotor();
+        motors[2] = this.Modules[1].getDriveMotor();
+        motors[3] = this.Modules[1].getSteerMotor();
+        motors[4] = this.Modules[2].getDriveMotor();
+        motors[5] = this.Modules[2].getSteerMotor();
+        motors[6] = this.Modules[3].getDriveMotor();
+        motors[7] = this.Modules[3].getSteerMotor();
+
+
+        return motors;
     }
 }
