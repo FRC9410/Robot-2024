@@ -34,7 +34,7 @@ public class Music extends SubsystemBase {
   public void playSong(String songName) {
     String deployPath = Filesystem.getDeployDirectory().getAbsolutePath();
     boolean playingMusic = true;
-    Orchestra orchestra = new Orchestra(deployPath + "/" + songName + "Output.chrp");
+    orchestra.loadMusic(deployPath + "/" + songName + "Output.chrp");
     orchestra.play();
     while(playingMusic) {
       if (!orchestra.isPlaying()) {
