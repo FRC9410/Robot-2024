@@ -35,12 +35,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RobotConstants;
-import frc.robot.commands.CenterNoteCommand;
-import frc.robot.commands.CenterNoteCommand2;
-import frc.robot.commands.IntakeNoteCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootNoteCommand;
-import frc.robot.commands.ShooterWristCommand;
+import frc.robot.commands.base.ShootCommand;
+import frc.robot.commands.base.ShooterWristCommand;
+import frc.robot.commands.group.CenterNoteCommand;
+import frc.robot.commands.group.CenterNoteCommand2;
+import frc.robot.commands.group.IntakeNoteCommand;
+import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
