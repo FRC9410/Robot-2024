@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
 
-  public TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
+  private TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
   CANSparkMax primaryWrist = new CANSparkMax(IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
   CANSparkMax secondaryWrist = new CANSparkMax(IntakeWrist.kSecondaryWristCanId, MotorType.kBrushless);
 
@@ -98,6 +98,10 @@ public class Intake extends SubsystemBase {
 
   public double getRollerPowerDraw() {
     return this.intake.getSupplyCurrent().getValueAsDouble();
+  }
+
+  public TalonFX getIntakeMotor() {
+    return this.intake;
   }
 
   private static void setIntakeConfigs(TalonFX motor) {

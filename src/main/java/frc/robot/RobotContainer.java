@@ -133,21 +133,4 @@ public class RobotContainer {
     subsystems.getShooter().setEnableIdleMode();
     subsystems.getIntake().setEnableIdleMode();
   }
-
-  public void playSong(String songName) {
-    String deployPath = Filesystem.getDeployDirectory().getAbsolutePath();
-    boolean playingMusic = true;
-    Orchestra orchestra = new Orchestra(deployPath + "/" + songName + "Output.chrp");
-    orchestra.addInstrument(subsystems.getShooter().feeder);
-    orchestra.addInstrument(subsystems.getShooter().primaryWheel);
-    orchestra.addInstrument(subsystems.getShooter().secondaryWheel);
-    orchestra.addInstrument(subsystems.getIntake().intake);
-    orchestra.play();
-    while(playingMusic) {
-      if (!orchestra.isPlaying()) {
-        playingMusic = false;
-      }
-    }
-    orchestra.close();
-  }
 }

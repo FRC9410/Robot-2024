@@ -30,10 +30,10 @@ public class Shooter extends SubsystemBase {
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
   private static final NeutralOut brake = new NeutralOut();
 
-  public TalonFX feeder = new TalonFX(ShooterWrist.kFeederCanId, RobotConstants.kCtreCanBusName);
+  private TalonFX feeder = new TalonFX(ShooterWrist.kFeederCanId, RobotConstants.kCtreCanBusName);
 
-  public TalonFX primaryWheel = new TalonFX(ShooterWrist.kPrimaryWheelCanId, RobotConstants.kCtreCanBusName);
-  public TalonFX secondaryWheel = new TalonFX(ShooterWrist.kSecondaryWheelCanId, RobotConstants.kCtreCanBusName);
+  private TalonFX primaryWheel = new TalonFX(ShooterWrist.kPrimaryWheelCanId, RobotConstants.kCtreCanBusName);
+  private TalonFX secondaryWheel = new TalonFX(ShooterWrist.kSecondaryWheelCanId, RobotConstants.kCtreCanBusName);
 
   CANSparkMax primaryWrist = new CANSparkMax(ShooterWrist.kPrimaryWristCanId, MotorType.kBrushless);
   CANSparkMax secondaryWrist = new CANSparkMax(ShooterWrist.kSecondaryWristCanId, MotorType.kBrushless);
@@ -136,6 +136,18 @@ public class Shooter extends SubsystemBase {
 
   public double getFeederPowerDraw() {
     return this.feeder.getSupplyCurrent().getValueAsDouble();
+  }
+
+  public TalonFX getFeederMotor() {
+    return this.feeder;
+  }
+
+  public TalonFX getPrimaryWheelMotor() {
+    return this.primaryWheel;
+  }
+
+  public TalonFX getSecondaryWheelMotor() {
+    return this.secondaryWheel;
   }
 
   private static void setShooterConfigs(TalonFX motor) {

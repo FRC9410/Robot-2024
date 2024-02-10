@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    robotContainer.playSong("jackSparrow");
+    robotContainer.getSubsystems().getMusic().playSong("jackSparrow");
   }
 
   @Override
