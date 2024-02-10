@@ -4,6 +4,26 @@
 
 package frc.robot;
 
+import java.io.File;
+
+import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.FireAnimation;
+import com.ctre.phoenix.led.LarsonAnimation;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.RgbFadeAnimation;
+import com.ctre.phoenix.led.SingleFadeAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
+import com.ctre.phoenix.led.TwinkleOffAnimation;
+import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -11,13 +31,18 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.CenterNoteCommand;
+import frc.robot.commands.CenterNoteCommand2;
 import frc.robot.commands.IntakeNoteCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootNoteCommand;
+import frc.robot.commands.ShooterWristCommand;
+import frc.robot.commands.VoltageFeedCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Subsystems;
 
@@ -29,6 +54,7 @@ public class RobotContainer {
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driverController = new CommandXboxController(0); // My joystick
   private Subsystems subsystems = new Subsystems();
+  private CANdle candle = new CANdle(23, "rio");
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -40,16 +66,15 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private void configureBindings() {
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+   drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivetrain.applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+           .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+           .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+       ));
 
-    driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driverController.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
+    // driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // driverController.b().whileTrue(drivetrain
+    //     .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))));
 
     // reset the field-centric heading on start press
     driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -59,13 +84,36 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    driverController.leftBumper().whileTrue(new IntakeNoteCommand(subsystems)).onFalse(new CenterNoteCommand(subsystems));
+   driverController.y().whileTrue(new IntakeNoteCommand(subsystems)); //.onFalse(new CenterNoteCommand(subsystems));
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
+    // driverController.b().onTrue(new CenterNoteCommand2(subsystems));
+    // driverController.a().whileTrue(new VoltageFeedCommand(subsystems.getShooter(), -90));
+    driverController.x().whileTrue(new ShootCommand(subsystems.getShooter(), 100));
+    driverController.a().whileTrue(new ShooterWristCommand(subsystems.getShooter(), 0.5));
+    driverController.b().whileTrue(new ShooterWristCommand(subsystems.getShooter(), -0.5));
+    // driverController.y().whileTrue(new IntakeNoteCommand(subsystems));
   }
 
   public RobotContainer() {
     configureBindings();
-  }
+    
+        CANdleConfiguration configAll = new CANdleConfiguration();
+        configAll.statusLedOffWhenActive = true;
+        configAll.disableWhenLOS = false;
+        configAll.stripType = LEDStripType.GRB;
+        configAll.brightnessScalar = 0.5;
+        configAll.vBatOutputMode = VBatOutputMode.Modulated;
+        candle.configAllSettings(configAll, 100);
+        // candle.animate(new ColorFlowAnimation(128, 20, 70, 0, 0.7, 8, Direction.Forward));
+        // candle.animate(new FireAnimation(0.5, 0.7, 8, 0.7, 0.5));
+        // candle.animate(new LarsonAnimation(0, 255, 46, 0, 1, 8, BounceMode.Front, 3));
+        // candle.animate(new RainbowAnimation(1, 0.1, 8));
+        // candle.animate(new RgbFadeAnimation(0.7, 0.4, 8));
+        candle.animate(new SingleFadeAnimation(0, 255, 255, 0, 0.75, 8)); 
+        // candle.animate(new StrobeAnimation(240, 10, 180, 0, 98.0 / 256.0, 8));
+        // candle.animate(new TwinkleAnimation(30, 70, 60, 0, 0.4, 8, TwinklePercent.Percent6));
+        // candle.animate(new TwinkleOffAnimation(70, 90, 175, 0, 0.8, 8, TwinkleOffPercent.Percent100));
+      }
 
   public Subsystems getSubsystems() {
     return this.subsystems;
@@ -76,12 +124,29 @@ public class RobotContainer {
   }
 
   public void setEnabledIdleMode() {
+    
+    subsystems.getShooter().setDisableIdleMode();
+    subsystems.getIntake().setDisableIdleMode();
+  }
+
+  public void setDisableIdleMode() {
     subsystems.getShooter().setEnableIdleMode();
     subsystems.getIntake().setEnableIdleMode();
   }
 
-  public void setDisableIdleMode() {
-    subsystems.getShooter().setDisableIdleMode();
-    subsystems.getIntake().setDisableIdleMode();
+  public void playSong() {
+    String deployPath = Filesystem.getDeployDirectory().getAbsolutePath();
+    Orchestra orchestra = new Orchestra(deployPath + "/starwarsOutput.chrp");
+    System.out.println(deployPath + "/piratesOutput.chrp");
+    File[] files = Filesystem.getDeployDirectory().listFiles();
+    for (int i = 0; i < files.length ; i++){
+    System.out.println(files[i].getName());
+    }
+    orchestra.addInstrument(subsystems.getShooter().feeder);
+    orchestra.addInstrument(subsystems.getShooter().primaryWheel);
+    orchestra.addInstrument(subsystems.getShooter().secondaryWheel);
+    orchestra.addInstrument(subsystems.getIntake().intake);
+    orchestra.play();
+    
   }
 }

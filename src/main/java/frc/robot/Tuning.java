@@ -31,8 +31,8 @@ public class Tuning {
     // private final SendableChooser<String> chooser = new SendableChooser<>();
 
     public Tuning(Subsystems subsystems) {
-        this.pidController = this.getPidController(subsystems, "Intake wrist");
-        this.setpoint = this.getEncoderPosition(subsystems, "Intake wrist");
+        this.pidController = this.getPidController(subsystems, "Shooter wrist");
+        this.setpoint = 0; //this.getEncoderPosition(subsystems, "Shooter wrist");
 
         this.pidController.setP(kP);
         this.pidController.setI(kI);
@@ -53,7 +53,7 @@ public class Tuning {
         SmartDashboard.putNumber("kI", kI);
         SmartDashboard.putNumber("kD", kD);
         SmartDashboard.putNumber("kF", kF);
-        SmartDashboard.putNumber("encoder value", this.getEncoderPosition(subsystems, "Intake wrist"));
+        SmartDashboard.putNumber("encoder value", this.getEncoderPosition(subsystems, "Shooter wrist"));
     }
 
     public void updateTuning(Subsystems subsystems) {

@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
 
-  TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
+  public TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
   CANSparkMax primaryWrist = new CANSparkMax(IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
   CANSparkMax secondaryWrist = new CANSparkMax(IntakeWrist.kSecondaryWristCanId, MotorType.kBrushless);
 
@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println(intake.getSupplyCurrent());
+    // System.out.println(intake.getSupplyCurrent());
   }
 
   public void setAngle(double angle) {

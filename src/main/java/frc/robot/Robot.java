@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     // tuning = new Tuning(robotContainer.getSubsystems());
+    // robotContainer.playSong();
   }
 
   @Override
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    robotContainer.playSong();
   }
 
   @Override

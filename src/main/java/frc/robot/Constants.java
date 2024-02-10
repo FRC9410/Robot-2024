@@ -179,17 +179,23 @@ public final class Constants
     public static final int kPrimaryWheelCanId = 21;
     public static final int kSecondaryWheelCanId = 22;
 
-    public static double kP = 0.5; 
+    public static double kP = 0.15; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
     public static double kFF = 0; 
-    public static double kMaxOutput = 0.2; 
-    public static double kMinOutput = -0.2;
+    public static double kMaxOutput = 0.5; 
+    public static double kMinOutput = -0.5;
 
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
+  }
+
+  public static final class ShooterConstants
+  {
+    public static double kP = 0.56;
+    public static double kFF = 4.75;
   }
 
   public static final class ElevatorConstants

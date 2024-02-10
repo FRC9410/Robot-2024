@@ -20,7 +20,7 @@ public class CenterNoteCommand extends ParallelRaceGroup {
     addCommands(
       new WaitCommand(5),
       new SequentialCommandGroup(
-        new StageFeederCommand(subsystems, -40, -3, 2, 0.5),
+        new StageFeederCommand(subsystems, -65, 2, 0.5),
         new WaitCommand(0.1),
         new EmptyFeederCommand(subsystems)
       )
