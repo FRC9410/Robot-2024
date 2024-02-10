@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
     // tuning = new Tuning(robotContainer.getSubsystems());
     // robotContainer.playSong();
   }

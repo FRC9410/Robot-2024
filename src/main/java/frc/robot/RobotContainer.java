@@ -100,16 +100,13 @@ public class RobotContainer {
         configAll.brightnessScalar = 0.5;
         configAll.vBatOutputMode = VBatOutputMode.Modulated;
         candle.configAllSettings(configAll, 100);
-        // candle.animate(new ColorFlowAnimation(128, 20, 70, 0, 0.7, 8, Direction.Forward));
         // candle.animate(new FireAnimation(0.5, 0.7, 8, 0.7, 0.5));
-        // candle.animate(new LarsonAnimation(0, 255, 46, 0, 1, 8, BounceMode.Front, 3));
         // candle.animate(new RainbowAnimation(1, 0.1, 8));
         // candle.animate(new RgbFadeAnimation(0.7, 0.4, 8));
         candle.animate(new SingleFadeAnimation(0, 255, 255, 0, 0.75, 8)); 
         // candle.animate(new StrobeAnimation(240, 10, 180, 0, 98.0 / 256.0, 8));
-        // candle.animate(new TwinkleAnimation(30, 70, 60, 0, 0.4, 8, TwinklePercent.Percent6));
-        // candle.animate(new TwinkleOffAnimation(70, 90, 175, 0, 0.8, 8, TwinkleOffPercent.Percent100));
-      }
+  }
+        
 
   public Subsystems getSubsystems() {
     return this.subsystems;
