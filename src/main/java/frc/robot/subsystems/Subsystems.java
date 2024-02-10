@@ -21,7 +21,7 @@ public class Subsystems {
         this.intake = new Intake();
         this.shooter = new Shooter();
         this.leds = new Leds();
-        this.music = new Music(this.intake, this.shooter);
+        this.music = new Music(this.intake, this.shooter, this.drivetrain);
         // elevator = new Elevator();
     }
 
