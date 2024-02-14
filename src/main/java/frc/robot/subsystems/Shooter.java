@@ -16,6 +16,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterWrist;
 import frc.robot.Constants.IntakeWrist;
@@ -47,6 +48,7 @@ public class Shooter extends SubsystemBase {
 
   private double wristAngle = 0;
 
+  private double setpoint;
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -74,7 +76,10 @@ public class Shooter extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
     
-    this.pidController.setReference(0, CANSparkMax.ControlType.kPosition);
+    this.setpoint = 3.2;
+    this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("shooter setpoint", setpoint);
+    // This method will be called once per scheduler run
 
 
     // setShooterConfigs(primaryWheel);
@@ -87,13 +92,19 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // System.out.println(this.encoder.getPosition());
+    
+    double newSetpoint = SmartDashboard.getNumber("shooter setpoint", IntakeWrist.kMinRotation);
+    if (setpoint != newSetpoint) {
+      setpoint = newSetpoint;
+      this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    }
   }
 
   public void setShooterVelocity(double velocity) {
     // this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity));
     // this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity));
-    this.primaryWheel.setControl(voltageVelocity.withVelocity(-100).withFeedForward(-ShooterConstants.kFF));
-    this.secondaryWheel.setControl(voltageVelocity.withVelocity(100).withFeedForward(ShooterConstants.kFF));
+    this.primaryWheel.setControl(voltageVelocity.withVelocity(-95).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(voltageVelocity.withVelocity(85).withFeedForward(ShooterConstants.kFF)); //95
   }
 
   public void shooterOff() {
@@ -114,7 +125,7 @@ public class Shooter extends SubsystemBase {
 
   public void feedOn(double velocity, double feedforward) {
     // this.feeder.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
-    this.feeder.setControl(voltageVelocity.withVelocity(100));
+    this.feeder.setControl(voltageVelocity.withVelocity(80));
   }
 
   public void feedOff() {
@@ -180,7 +191,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setEnableIdleMode() {
-    feeder.setNeutralMode(NeutralModeValue.Brake);
+    feeder.setNeutralMode(NeutralModeValue.Coast);
     primaryWheel.setNeutralMode(NeutralModeValue.Coast);
 
     secondaryWheel.setNeutralMode(NeutralModeValue.Coast);

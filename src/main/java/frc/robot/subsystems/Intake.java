@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
@@ -14,6 +15,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeWrist;
@@ -34,8 +36,10 @@ public class Intake extends SubsystemBase {
   private double Tuningsetpoint = 0;
   private double TuningMaxOutput = IntakeWrist.kMaxOutput;
 
+  private static final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
 
+  private double setpoint;
   
   public Intake() {
     this.primaryWrist.restoreFactoryDefaults();
@@ -59,7 +63,14 @@ public class Intake extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
 
-    this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
+    setpoint = IntakeWrist.kMinRotation;
+
+    this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("setpoint", setpoint);
+    SmartDashboard.putNumber("kP", IntakeWrist.kP);
+    SmartDashboard.putNumber("kI", IntakeWrist.kI);
+    SmartDashboard.putNumber("kD", IntakeWrist.kD);
+    SmartDashboard.putNumber("encoder value", this.encoder.getPosition());
 
     setIntakeConfigs(intake);
   }
@@ -67,25 +78,34 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // System.out.println(intake.getSupplyCurrent());
+    
+    double newSetpoint = SmartDashboard.getNumber("setpoint", IntakeWrist.kMinRotation);
+    if (setpoint != newSetpoint) {
+      setpoint = newSetpoint;
+      this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    }
   }
 
   public void setAngle(double angle) {
-      this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
   }
   
 
   public void wristOff() {
-    this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
   }
 
   public void intakeOn(double velocity, double feedforward) {
     this.intake.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
   }
 
+  public void setIntakeVoltage(double velocity, double feedforward) {
+    this.intake.setControl(voltageVelocity.withVelocity(velocity).withFeedForward(feedforward));
+  }
+
 
   public void intakeOff() {
-    this.intake.set(0);
+    this.intake.setVoltage(0);
   }
 
   public SparkPIDController getPIDController() {
@@ -98,6 +118,10 @@ public class Intake extends SubsystemBase {
 
   public double getRollerPowerDraw() {
     return this.intake.getSupplyCurrent().getValueAsDouble();
+  }
+
+  public double getVelocity() {
+    return this.intake.getRotorVelocity().getValueAsDouble();
   }
 
   public TalonFX getIntakeMotor() {
@@ -119,7 +143,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setEnableIdleMode() {
-    intake.setNeutralMode(NeutralModeValue.Brake);
+    intake.setNeutralMode(NeutralModeValue.Coast);
     primaryWrist.setIdleMode(IdleMode.kBrake);
     secondaryWrist.setIdleMode(IdleMode.kBrake);
   }

@@ -8,20 +8,20 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class IntakeCommand extends Command {
+public class VoltageIntakeCommand extends Command {
   /** Creates a new IntakeIn. */
   private Intake intake;
   private double speed;
   private Timer timer;
-  private double minCurrentDraw;
+  private double maxCurrentDraw;
   private double feedforward;
 
-  public IntakeCommand(Intake intake, double speed, double feedforward, double minCurrentDraw) {
+  public VoltageIntakeCommand(Intake intake, double speed, double feedforward, double maxCurrentDraw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
     this.timer = new Timer();
-    this.minCurrentDraw = minCurrentDraw;
+    this.maxCurrentDraw = maxCurrentDraw;
     this.feedforward = feedforward;
   }
 
@@ -35,7 +35,7 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.intake.intakeOn(speed, feedforward);
+      this.intake.setIntakeVoltage(speed, feedforward);
   }
 
   // Called once the command ends or is interrupted.
@@ -47,7 +47,7 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (this.speed < 0 && this.timer.hasElapsed(1) && Math.abs(this.intake.getVelocity()) < this.minCurrentDraw) {
+    if (Math.abs(this.speed) > 0 && this.timer.hasElapsed(0.5) && Math.abs(this.intake.getRollerPowerDraw()) > this.maxCurrentDraw) {
       return true;
     }
     return false;
