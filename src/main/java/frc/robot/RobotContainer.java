@@ -113,6 +113,9 @@ public class RobotContainer {
     && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
       return DriveConstants.MaxShootingSpeed;
     }
+    if(this.driverController.getLeftTriggerAxis() > 0.5) {
+      return DriveConstants.MaxIntakingSpeed;
+    }
     else{
       return DriveConstants.MaxSpeed;
     }
