@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
     driverController = robotContainer.getDriverController();
     // tuning = new Tuning(robotContainer.getSubsystems());
-    // robotContainer.playSong();
   }
 
   @Override
@@ -80,12 +79,20 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+      boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
       double ty = robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER);
-    if (driverController.getRightTriggerAxis() > 0.5 && ty != 0 && ty >= VisionConstants.kMaxShooterDistance) {
+    if (driverController.getRightTriggerAxis() > 0.5 && hasTarget && ty >= VisionConstants.kMaxShooterDistance) {
       robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ty);
       robotContainer.getSubsystems().getIntake().setWristAngleSetpoint(ty);
+    }
+    
+    if(hasTarget && ty >= VisionConstants.kMaxShooterDistance) {
+      robotContainer.getSubsystems().getLeds().setStrobeAnimtation(255, 121, 198);
+    }
+    else {
+      robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
     }
   }
 
