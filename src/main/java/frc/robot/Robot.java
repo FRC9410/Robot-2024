@@ -6,12 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Vision.VisionType;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -36,8 +36,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    SmartDashboard.putNumber("ty", robotContainer.table.getEntry("ty").getDouble(0.0));
-    SmartDashboard.putNumber("tx", robotContainer.table.getEntry("tx").getDouble(0.0));
+    SmartDashboard.putNumber("ty", robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER));
+    SmartDashboard.putNumber("tx", robotContainer.getSubsystems().getVision().getTx(VisionType.SHOOTER));
   } 
 
   @Override
@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if (driverController.getRightTriggerAxis() > 0.5) {
-      double ty = robotContainer.table.getEntry("ty").getDouble(0.0);
+      double ty = robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER);
       robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ty);

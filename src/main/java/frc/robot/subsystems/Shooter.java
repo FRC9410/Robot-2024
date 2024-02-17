@@ -19,7 +19,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterWrist;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -226,9 +225,16 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setWristAngleSetpoint(double ty){
-    wristSetpoint = wristAngleInterpolator.getInterpolatedValue(ty);
+    wristSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= ShooterWrist.kMinRotation
+    && wristAngleInterpolator.getInterpolatedValue(ty) <= ShooterWrist.kMaxRotation ?
+    wristAngleInterpolator.getInterpolatedValue(ty) : 0.0;
   }
 
+  public boolean isShooterReady() {
+    return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > Math.abs(shooterSetpoint)
+    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 5)
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint);
+  }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);
     primaryWheel.setNeutralMode(NeutralModeValue.Coast);

@@ -14,6 +14,7 @@ public class Subsystems {
     private Intake intake;
     private Leds leds;
     private Music music;
+    private Vision vision;
 
     public Subsystems() {
         
@@ -22,6 +23,7 @@ public class Subsystems {
         this.shooter = new Shooter();
         this.leds = new Leds();
         this.music = new Music(this.intake, this.shooter, this.drivetrain);
+        this.vision = new Vision();
         // elevator = new Elevator();
     }
 
@@ -47,5 +49,9 @@ public class Subsystems {
 
     public Music getMusic() {
         return music;
+    }
+
+    public Vision getVision() {
+        return vision;
     }
 }

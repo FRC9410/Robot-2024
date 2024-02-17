@@ -152,7 +152,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void setWristAngleSetpoint(double ty){
-    wristAngleSetpoint = wristAngleInterpolator.getInterpolatedValue(ty);
+    wristAngleSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= IntakeWrist.kMinRotation
+    && wristAngleInterpolator.getInterpolatedValue(ty) <= IntakeWrist.kMaxRotation ?
+    wristAngleInterpolator.getInterpolatedValue(ty) : 0.0;
   }
 
   public void setEnableIdleMode() {

@@ -12,8 +12,6 @@ import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -26,14 +24,13 @@ import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
+import frc.robot.subsystems.Vision.VisionType;
 
 public class RobotContainer {
-  public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-back");
   
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems();
-  private CANdle candle = new CANdle(23, "rio");
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(DriveConstants.MaxSpeed * OIConstants.LEFT_X_DEADBAND).withRotationalDeadband(DriveConstants.MaxAngularRate * OIConstants.RIGHT_X_DEADBAND)
@@ -71,19 +68,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
-    
-        CANdleConfiguration configAll = new CANdleConfiguration();
-        configAll.statusLedOffWhenActive = true;
-        configAll.disableWhenLOS = false;
-        configAll.stripType = LEDStripType.GRB;
-        configAll.brightnessScalar = 0.5;
-        configAll.vBatOutputMode = VBatOutputMode.Modulated;
-        candle.configAllSettings(configAll, 100);
-        // candle.animate(new FireAnimation(0.5, 0.7, 8, 0.7, 0.5));
-        // candle.animate(new RainbowAnimation(1, 0.1, 8));
-        // candle.animate(new RgbFadeAnimation(0.7, 0.4, 8));
-        candle.animate(new SingleFadeAnimation(0, 255, 255, 0, 0.75, 8)); 
-        // candle.animate(new StrobeAnimation(240, 10, 180, 0, 98.0 / 256.0, 8));
+    subsystems.getLeds().setFadeAnimtation(0, 255, 255);
   }
         
 
@@ -112,9 +97,9 @@ public class RobotContainer {
 
   private double getTurn() {
     if(this.driverController.getRightTriggerAxis() > 0.5
-    && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0) {
+    && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
       double pGain = 10.08;
-      double tx = table.getEntry("tx").getDouble(0.0);
+      double tx = subsystems.getVision().getTx(VisionType.SHOOTER);
 
       return Math.abs(tx) < 1 ? 0 : pGain * tx;
     }
@@ -125,7 +110,7 @@ public class RobotContainer {
 
   private double getMaxSpeed() {
     if(this.driverController.getRightTriggerAxis() > 0.5
-    && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0) {
+    && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
       return DriveConstants.MaxShootingSpeed;
     }
     else{

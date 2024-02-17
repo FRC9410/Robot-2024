@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utils.LinearInterpolator;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -27,6 +26,11 @@ public final class Constants
   public static final class RobotConstants {
     public static final String kCtreCanBusName = "canivore";
   }
+
+  public static final class VisionConstants {
+    public static final String kShooterTableName = "limelight-back";
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -211,6 +215,7 @@ public final class Constants
     public static double kMaxOutput = 0.5; 
     public static double kMinOutput = -0.5;
     public static double kMinRotation = 0.0;
+    public static double kMaxRotation = 16.0;
 
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;

@@ -7,12 +7,12 @@ package frc.robot.commands.group;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.base.AutoIntakeWristCommand;
 import frc.robot.commands.base.AutoShootCommand;
 import frc.robot.commands.base.AutoShooterWristCommand;
 import frc.robot.commands.base.AutoVoltageFeedCommand;
 import frc.robot.commands.base.IntakeCommand;
+import frc.robot.commands.base.TargetCheckCommand;
 import frc.robot.subsystems.Subsystems;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -25,7 +25,7 @@ public class AutoShootNoteCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ParallelRaceGroup(
-        new WaitCommand(1.5),
+        new TargetCheckCommand(subsystems),
         new AutoShootCommand(subsystems.getShooter()),
         new AutoVoltageFeedCommand(subsystems.getShooter()),
         new AutoShooterWristCommand(subsystems.getShooter()),
