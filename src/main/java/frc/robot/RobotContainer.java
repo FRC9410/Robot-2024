@@ -110,7 +110,7 @@ public class RobotContainer {
 
   private double getMaxSpeed() {
     if(this.driverController.getRightTriggerAxis() > 0.5
-    && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
+    && subsystems.getVision().hasTarget(VisionType.SHOOTER)) {
       return DriveConstants.MaxShootingSpeed;
     }
     if(this.driverController.getLeftTriggerAxis() > 0.5) {
@@ -124,5 +124,6 @@ public class RobotContainer {
   private double getSpeed(double speed) {
     double newSpeed = Math.pow(speed, 2);
     return speed > 0 ? newSpeed : -newSpeed;
+    // return speed;
   }
 }
