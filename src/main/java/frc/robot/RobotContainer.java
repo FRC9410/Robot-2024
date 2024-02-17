@@ -31,9 +31,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.base.IntakeCommand;
 import frc.robot.commands.base.ShootCommand;
@@ -48,7 +52,10 @@ import frc.robot.subsystems.Subsystems;
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
-
+ 
+  public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-back");
+  
+  
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController driverController = new CommandXboxController(0); // My joystick
@@ -56,7 +63,7 @@ public class RobotContainer {
   private CANdle candle = new CANdle(23, "rio");
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * OperatorConstants.LEFT_X_DEADBAND).withRotationalDeadband(MaxAngularRate * OperatorConstants.RIGHT_X_DEADBAND) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -66,8 +73,11 @@ public class RobotContainer {
   private void configureBindings() {
    subsystems.getDrivetrain().setDefaultCommand( // Drivetrain will execute this command periodically
         subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-           .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-           .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+           .withVelocityY((-driverController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
+           .withRotationalRate(driverController.getRightTriggerAxis() > 0.5
+              && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0
+              ? -(table.getEntry("tx").getDouble(0.0) * 0.08)
+              : (-driverController.getRightX() * MaxSpeed)) // Drive counterclockwise with negative X (left)
        ));
 
     // driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -86,7 +96,7 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
     // driverController.b().onTrue(new CenterNoteCommand2(subsystems));
     // driverController.a().whileTrue(new VoltageFeedCommand(subsystems.getShooter(), -90));
-    driverController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100));
+    driverController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
     driverController.a().whileTrue(new ShooterWristCommand(subsystems.getShooter(), 0.5));
     driverController.b().whileTrue(new ShooterWristCommand(subsystems.getShooter(), -0.5));
     // driverController.y().whileTrue(new IntakeNoteCommand(subsystems));

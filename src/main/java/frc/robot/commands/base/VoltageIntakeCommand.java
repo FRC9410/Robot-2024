@@ -47,7 +47,7 @@ public class VoltageIntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(this.speed) > 0 && this.timer.hasElapsed(0.5) && Math.abs(this.intake.getRollerPowerDraw()) > this.maxCurrentDraw) {
+    if (Math.abs(this.speed) > 0 && this.timer.hasElapsed(3) && Math.abs(this.intake.getRollerPowerDraw()) > this.maxCurrentDraw) {
       return true;
     }
     return false;

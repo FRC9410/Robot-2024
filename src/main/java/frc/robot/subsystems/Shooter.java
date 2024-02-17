@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterWrist;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -28,6 +29,7 @@ public class Shooter extends SubsystemBase {
   private RelativeEncoder encoder;
 
   private static final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private static final VelocityVoltage voltageVelocityFoc = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
   private static final NeutralOut brake = new NeutralOut();
 
@@ -98,13 +100,16 @@ public class Shooter extends SubsystemBase {
       setpoint = newSetpoint;
       this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     }
+
+    SmartDashboard.putNumber("Shooter value", this.encoder.getPosition());
+    System.out.println(primaryWheel.getVelocity());
   }
 
   public void setShooterVelocity(double velocity) {
     // this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity));
     // this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity));
-    this.primaryWheel.setControl(voltageVelocity.withVelocity(-95).withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(voltageVelocity.withVelocity(85).withFeedForward(ShooterConstants.kFF)); //95
+    this.primaryWheel.setControl(voltageVelocity.withVelocity(-100).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(voltageVelocity.withVelocity(95).withFeedForward(ShooterConstants.kFF)); //95
   }
 
   public void shooterOff() {
@@ -133,7 +138,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFeederVelocity(double velocity) {
-    this.feeder.setControl(voltageVelocity.withVelocity(velocity));
+    this.feeder.setControl(voltageVelocityFoc.withVelocity(velocity));
 
   }
 

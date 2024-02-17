@@ -54,6 +54,7 @@ public class Tuning {
         SmartDashboard.putNumber("kD", kD);
         SmartDashboard.putNumber("kF", kF);
         SmartDashboard.putNumber("encoder value", this.getEncoderPosition(subsystems, "Shooter wrist"));
+        
     }
 
     public void updateTuning(Subsystems subsystems) {
