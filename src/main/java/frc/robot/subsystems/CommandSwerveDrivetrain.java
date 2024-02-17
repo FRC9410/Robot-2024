@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -75,9 +77,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void configDriveMotors() {
         TalonFX[] motors = this.getMotors();
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        OpenLoopRampsConfigs openLoopRamps = new OpenLoopRampsConfigs();
+        openLoopRamps.VoltageOpenLoopRampPeriod = 0.25;
+        config.OpenLoopRamps = openLoopRamps;
+        
         for(TalonFX motor : motors){
             motor.setNeutralMode(NeutralModeValue.Coast);
-            
-          }
+            motor.getConfigurator().apply(config);
+        }
     }
 }

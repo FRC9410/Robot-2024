@@ -232,8 +232,11 @@ public class Shooter extends SubsystemBase {
 
   public boolean isShooterReady() {
     return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > Math.abs(shooterSetpoint)
+    && Math.abs(primaryWheel.getVelocity().getValueAsDouble()) < (Math.abs(shooterSetpoint) + 5)
     && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 5)
-    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint);
+    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) < (Math.abs(shooterSetpoint))
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint)
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) < (Math.abs(feederSetpoint) + 5);
   }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);

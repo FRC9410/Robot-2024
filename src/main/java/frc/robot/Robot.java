@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Vision.VisionType;
 
 public class Robot extends TimedRobot {
@@ -80,8 +81,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if (driverController.getRightTriggerAxis() > 0.5) {
       double ty = robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER);
+    if (driverController.getRightTriggerAxis() > 0.5 && ty != 0 && ty >= VisionConstants.kMaxShooterDistance) {
       robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ty);

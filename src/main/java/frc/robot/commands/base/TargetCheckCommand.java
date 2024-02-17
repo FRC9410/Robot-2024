@@ -5,6 +5,7 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.Vision.VisionType;
 
@@ -32,6 +33,7 @@ public class TargetCheckCommand extends Command {
   @Override
   public boolean isFinished() {
     if (Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) < 1
+    && subsystems.getVision().getTy(VisionType.SHOOTER) >= VisionConstants.kMaxShooterDistance
     && subsystems.getVision().getTx(VisionType.SHOOTER) != 0
     && subsystems.getShooter().isShooterReady()){
       return true;

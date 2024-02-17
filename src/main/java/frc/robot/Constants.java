@@ -29,6 +29,7 @@ public final class Constants
 
   public static final class VisionConstants {
     public static final String kShooterTableName = "limelight-back";
+    public static final double kMaxShooterDistance = -4.5; // expressed as tx from limelight
   }
 
   public static final class DriveConstants {

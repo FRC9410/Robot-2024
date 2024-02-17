@@ -96,10 +96,10 @@ public class RobotContainer {
   }
 
   private double getTurn() {
-    if(this.driverController.getRightTriggerAxis() > 0.5
-    && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
+    double tx = subsystems.getVision().getTx(VisionType.SHOOTER);
+
+    if(this.driverController.getRightTriggerAxis() > 0.5 && tx > 0) {
       double pGain = 10.08;
-      double tx = subsystems.getVision().getTx(VisionType.SHOOTER);
 
       return Math.abs(tx) < 1 ? 0 : pGain * tx;
     }
