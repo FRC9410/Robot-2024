@@ -4,7 +4,6 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 

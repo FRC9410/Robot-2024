@@ -10,7 +10,6 @@ import frc.robot.subsystems.Shooter;
 public class AutoShootCommand extends Command {
   /** Creates a new FeedIn. */
   private Shooter shooter;
-  private double speed;
   public AutoShootCommand(Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;

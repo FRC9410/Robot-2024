@@ -4,14 +4,12 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoVoltageFeedCommand extends Command {
   /** Creates a new FeedIn. */
   private Shooter shooter;
-  private double speed;
 
   public AutoVoltageFeedCommand(Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.

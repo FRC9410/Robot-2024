@@ -14,14 +14,12 @@ public class AutoFeedCommand extends Command {
   private double speed; 
   private Timer timer;
   private double minCurrentDraw;
-  private double feedforward;
 
-  public AutoFeedCommand(Shooter shooter, double feedforward, double minCurrentDraw) {
+  public AutoFeedCommand(Shooter shooter, double minCurrentDraw) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;
     this.timer = new Timer();
     this.minCurrentDraw = minCurrentDraw;
-    this.feedforward = feedforward;
   }
 
   // Called when the command is initially scheduled.

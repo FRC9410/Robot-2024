@@ -13,8 +13,6 @@ import frc.robot.commands.base.AutoIntakeWristCommand;
 import frc.robot.commands.base.AutoShootCommand;
 import frc.robot.commands.base.AutoShooterWristCommand;
 import frc.robot.commands.base.IntakeCommand;
-import frc.robot.commands.base.ShootCommand;
-import frc.robot.commands.base.VoltageFeedCommand;
 import frc.robot.subsystems.Subsystems;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
