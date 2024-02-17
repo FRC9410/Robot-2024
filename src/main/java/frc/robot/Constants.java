@@ -67,7 +67,9 @@ public final class Constants
 
     public static final boolean kGyroReversed = false;
 
-    
+    public static final double MaxSpeed = 6; // 6 meters per second desired top speed
+    public static final double MaxShootingSpeed = 3; // 6 meters per second desired top speed
+    public static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity    
   }
 
   public static final class ModuleConstants {
@@ -124,6 +126,11 @@ public final class Constants
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
     public static final double kDriveDeadband = 0.05;
+    
+    public static final double LEFT_X_DEADBAND  = 0.05;
+    public static final double LEFT_Y_DEADBAND  = 0.05;
+    public static final double RIGHT_X_DEADBAND = 0.05;
+    public static final double TURN_CONSTANT    = 6;
   }
 
   public static final class AutoConstants {
@@ -162,8 +169,8 @@ public final class Constants
     public static double kMaxOutput = 1; 
     public static double kMinOutput = -1;
     public static double kOffset = 0.7;
-    public static double kMaxRotation = 0.64;
-    public static double kMinRotation = 0.12; //0.135; @ 4.25// 0.11;
+    public static double kMaxRotation = 0.63;
+    public static double kMinRotation = 0.12;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
@@ -203,6 +210,7 @@ public final class Constants
     public static double kFF = 0; 
     public static double kMaxOutput = 0.5; 
     public static double kMinOutput = -0.5;
+    public static double kMinRotation = 0.0;
 
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
@@ -271,15 +279,5 @@ public final class Constants
 
     public static final int kCPR = 8192;
     public static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
-  }
-
-  public static class OperatorConstants
-  {
-
-    // Joystick Deadband
-    public static final double LEFT_X_DEADBAND  = 0.05;
-    public static final double LEFT_Y_DEADBAND  = 0.05;
-    public static final double RIGHT_X_DEADBAND = 0.05;
-    public static final double TURN_CONSTANT    = 6;
   }
 }

@@ -5,32 +5,22 @@
 package frc.robot.commands.group;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.commands.base.IntakeCommand;
 import frc.robot.commands.base.IntakeWristCommand;
-import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.subsystems.Subsystems;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeNoteCommand extends SequentialCommandGroup {
+public class IntakeNoteCommand extends ParallelRaceGroup {
   /** Creates a new IntakeNoteCommand. */
   public IntakeNoteCommand(Subsystems subsystems) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ParallelRaceGroup(
-        new IntakeWristCommand(subsystems.getIntake(), IntakeWrist.kMaxRotation),
-        new IntakeCommand(subsystems.getIntake(), -85, -10, 15)
-      ),
-      new ParallelRaceGroup(
-        new VoltageIntakeCommand(subsystems.getIntake(), -85, -6, 100),
-        new WaitCommand(2)
-      )
-
+      new IntakeWristCommand(subsystems.getIntake(), IntakeWrist.kMaxRotation),
+      new IntakeCommand(subsystems.getIntake(), -85, -10, 15)
     );
   }
 }

@@ -90,7 +90,7 @@ public class Shooter extends SubsystemBase {
     pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
     
-    this.setpoint = 3.2;
+    this.setpoint = ShooterWrist.kMinRotation;
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     SmartDashboard.putNumber("shooter setpoint", setpoint);
     // This method will be called once per scheduler run
@@ -148,7 +148,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feedOn(double velocity, double feedforward) {
-    // this.feeder.setControl(torqueVelocity.withVelocity(velocity).withFeedForward(feedforward));
     this.feeder.setControl(voltageVelocity.withVelocity(80));
   }
 

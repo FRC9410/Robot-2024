@@ -29,13 +29,13 @@ public class ShootNoteCommand extends SequentialCommandGroup {
       new ParallelRaceGroup(
         new WaitCommand(1.5),
         new AutoShootCommand(subsystems.getShooter()),
-        new AutoVoltageFeedCommand(subsystems.getShooter()), //-58)
+        new AutoVoltageFeedCommand(subsystems.getShooter()),
         new AutoShooterWristCommand(subsystems.getShooter()),
         new AutoIntakeWristCommand(subsystems.getIntake())
       ),
       new ParallelCommandGroup(
         new AutoShootCommand(subsystems.getShooter()),
-        new AutoVoltageFeedCommand(subsystems.getShooter()), //-58),
+        new AutoVoltageFeedCommand(subsystems.getShooter()),
         new IntakeCommand(subsystems.getIntake(), 85, 8, 0)
       )
     );

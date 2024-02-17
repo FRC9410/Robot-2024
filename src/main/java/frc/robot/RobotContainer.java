@@ -4,78 +4,50 @@
 
 package frc.robot;
 
-import java.io.File;
-
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
-import com.ctre.phoenix.led.FireAnimation;
-import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
-import com.ctre.phoenix.led.RainbowAnimation;
-import com.ctre.phoenix.led.RgbFadeAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
-import com.ctre.phoenix.led.StrobeAnimation;
-import com.ctre.phoenix.led.TwinkleAnimation;
-import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
-import com.ctre.phoenix.led.TwinkleOffAnimation;
-import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.led.ColorFlowAnimation;
-import com.ctre.phoenix6.Orchestra;
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.commands.base.IntakeCommand;
-import frc.robot.commands.base.ShootCommand;
-import frc.robot.commands.base.ShooterWristCommand;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
+import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
-  private double MaxSpeed = 6; // 6 meters per second desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
- 
   public NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-back");
   
-  
-
-  /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController driverController = new CommandXboxController(0); // My joystick
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems();
   private CANdle candle = new CANdle(23, "rio");
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * OperatorConstants.LEFT_X_DEADBAND).withRotationalDeadband(MaxAngularRate * OperatorConstants.RIGHT_X_DEADBAND) // Add a 10% deadband
+      .withDeadband(DriveConstants.MaxSpeed * OIConstants.LEFT_X_DEADBAND).withRotationalDeadband(DriveConstants.MaxAngularRate * OIConstants.RIGHT_X_DEADBAND)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
 
   private void configureBindings() {
    subsystems.getDrivetrain().setDefaultCommand( // Drivetrain will execute this command periodically
-        subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-           .withVelocityY((-driverController.getLeftX() * MaxSpeed)) // Drive left with negative X (left)
-           .withRotationalRate(driverController.getRightTriggerAxis() > 0.5
-              && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0
-              ? -(table.getEntry("tx").getDouble(0.0) * 0.08)
-              : (-driverController.getRightX() * MaxSpeed)) // Drive counterclockwise with negative X (left)
+        subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * getMaxSpeed()) // Drive forward with negative Y (forward)
+           .withVelocityY((-driverController.getLeftX() * getMaxSpeed())) // Drive left with negative X (left)
+           .withRotationalRate(getTurn()) // Drive counterclockwise with negative X (left)
        ));
 
     // driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -84,20 +56,17 @@ public class RobotContainer {
 
     // reset the field-centric heading on start press
     driverController.start().onTrue(subsystems.getDrivetrain().runOnce(() -> subsystems.getDrivetrain().seedFieldRelative()));
-
-    if (Utils.isSimulation()) {
-      subsystems.getDrivetrain().seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
 
-   driverController.y().whileTrue(new IntakeNoteCommand(subsystems)); //.onFalse(new CenterNoteCommand(subsystems));
+    driverController.leftTrigger(0.5).whileTrue(new IntakeNoteCommand(subsystems)).onFalse(new ParallelRaceGroup(
+      new WaitCommand(2),
+      new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)
+    ));
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
-    // driverController.b().onTrue(new CenterNoteCommand2(subsystems));
-    // driverController.a().whileTrue(new VoltageFeedCommand(subsystems.getShooter(), -90));
-    driverController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
-    driverController.a().whileTrue(new ShooterWristCommand(subsystems.getShooter(), 0.5));
-    driverController.b().whileTrue(new ShooterWristCommand(subsystems.getShooter(), -0.5));
-    // driverController.y().whileTrue(new IntakeNoteCommand(subsystems));
+    driverController.rightTrigger(0.5).whileTrue(new ShootNoteCommand(subsystems));
+
+    copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
+    copilotController.y().whileTrue(new ScoreAmpCommand(subsystems));
   }
 
   public RobotContainer() {
@@ -139,5 +108,28 @@ public class RobotContainer {
 
   public CommandXboxController getDriverController() {
     return driverController;
+  }
+
+  private double getTurn() {
+    if(this.driverController.getRightTriggerAxis() > 0.5
+    && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0) {
+      double pGain = 10.08;
+      double tx = table.getEntry("tx").getDouble(0.0);
+
+      return Math.abs(tx) < 1 ? 0 : pGain * tx;
+    }
+    else{
+      return -this.driverController.getRightX() * getMaxSpeed();
+    }
+  }
+
+  private double getMaxSpeed() {
+    if(this.driverController.getRightTriggerAxis() > 0.5
+    && Math.abs(table.getEntry("tx").getDouble(0.0)) > 0) {
+      return DriveConstants.MaxShootingSpeed;
+    }
+    else{
+      return DriveConstants.MaxSpeed;
+    }
   }
 }
