@@ -106,10 +106,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity(double velocity) {
-    // this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity));
-    // this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity));
-    this.primaryWheel.setControl(voltageVelocity.withVelocity(-100).withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(voltageVelocity.withVelocity(95).withFeedForward(ShooterConstants.kFF)); //95
+    this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
   }
 
   public void shooterOff() {

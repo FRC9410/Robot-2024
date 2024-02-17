@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.LinearInterpolator;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -170,6 +171,20 @@ public final class Constants
     public static final double maxAcc = 25000;
     public static final double maxVel = 11000;
     public static final double allowedError = 0;
+
+    public static final double[][] wristAngles = {
+      {-3.5, .11},
+      {-2.5, .11},
+      {-0.89, .11},
+      {0.91, .11},
+      {1.77, .11},
+      {4.62, .1125},
+      {7.12, .115},
+      {9.38, .12},
+      {12.9, .12},
+      {16.38, .12},
+      {20.7, .12}
+    };
   }
 
   public static final class ShooterWrist
@@ -192,12 +207,54 @@ public final class Constants
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
+
+    public static final double [][] wristAngles = {
+      {-3.5, 2.775},
+      {-2.5, 2.725},
+      {-0.89, 2.7},
+      {0.91, 2.4},
+      {1.77, 2.25},
+      {4.62, 1.9},
+      {7.12, 1.4},
+      {9.38, 0.8},
+      {12.9, 0},
+      {16.38, 0},
+      {20.7, 0}
+    };
   }
 
   public static final class ShooterConstants
   {
     public static double kP = 0.56;
     public static double kFF = 4.75;
+
+    public static final double[][] shooterSpeeds = {
+      {-3.5, 100},
+      {-2.5, 95},
+      {-0.89, 95},
+      {0.91, 90},
+      {1.77, 80},
+      {4.62, 85},
+      {7.12, 80},
+      {9.38, 80},
+      {12.9, 80},
+      {16.38, 80},
+      {20.7, 80}
+    };
+
+    public static final double[][] feederSpeeds = {
+      {-3.5, -45},
+      {-2.5, -45},
+      {-0.89, -45},
+      {0.91, -45},
+      {1.77, -40},
+      {4.62, -40},
+      {7.12, -40},
+      {9.38, -40},
+      {12.9, -40},
+      {16.38, -40},
+      {20.7, -40}
+    };
   }
 
   public static final class ElevatorConstants

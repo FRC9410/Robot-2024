@@ -138,4 +138,8 @@ public class RobotContainer {
     subsystems.getShooter().setEnableIdleMode();
     subsystems.getIntake().setEnableIdleMode();
   }
+
+  public CommandXboxController getDriverController() {
+    return driverController;
+  }
 }
