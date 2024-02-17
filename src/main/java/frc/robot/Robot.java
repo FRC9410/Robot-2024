@@ -81,14 +81,19 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
       boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
       double ty = robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER);
-    if (driverController.getRightTriggerAxis() > 0.5 && hasTarget && ty >= VisionConstants.kMaxShooterDistance) {
+    if (driverController.getRightTriggerAxis() > 0.5
+    && hasTarget && ty >= VisionConstants.kMaxShooterDistance
+    && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4 ||
+    robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
       robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ty);
       robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ty);
       robotContainer.getSubsystems().getIntake().setWristAngleSetpoint(ty);
     }
     
-    if(hasTarget && ty >= VisionConstants.kMaxShooterDistance) {
+    if(hasTarget && ty >= VisionConstants.kMaxShooterDistance
+    && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4 ||
+    robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
       robotContainer.getSubsystems().getLeds().setStrobeAnimtation(255, 121, 198);
     }
     else {

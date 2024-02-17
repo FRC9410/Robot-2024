@@ -34,7 +34,7 @@ public class ShooterWristCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     if(!this.maintainPosition) {
-      this.shooter.wristOff();
+      this.shooter.setWristAngle(0);
     }
   }
 

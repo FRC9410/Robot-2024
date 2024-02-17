@@ -31,6 +31,10 @@ public class Vision extends SubsystemBase {
     return  getTable(type).getEntry("ty").getDouble(0);
   }
 
+  public double getTagId(VisionType type) {
+    return getTable(type).getEntry("tid").getDouble(0.0);
+  }
+
   public boolean hasTarget(VisionType type) {
     return getTable(type).getEntry("tv").getDouble(0) == 1;
   }

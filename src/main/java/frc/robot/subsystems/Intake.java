@@ -69,13 +69,14 @@ public class Intake extends SubsystemBase {
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
 
     setpoint = IntakeWrist.kMinRotation;
+    wristAngleSetpoint = IntakeWrist.kMinRotation;
 
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-    SmartDashboard.putNumber("setpoint", setpoint);
-    SmartDashboard.putNumber("kP", IntakeWrist.kP);
-    SmartDashboard.putNumber("kI", IntakeWrist.kI);
-    SmartDashboard.putNumber("kD", IntakeWrist.kD);
-    SmartDashboard.putNumber("encoder value", this.encoder.getPosition());
+    // SmartDashboard.putNumber("setpoint", setpoint);
+    // SmartDashboard.putNumber("kP", IntakeWrist.kP);
+    // SmartDashboard.putNumber("kI", IntakeWrist.kI);
+    // SmartDashboard.putNumber("kD", IntakeWrist.kD);
+    // SmartDashboard.putNumber("encoder value", this.encoder.getPosition());
 
     setIntakeConfigs(intake);
   }
@@ -84,11 +85,12 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     
-    double newSetpoint = SmartDashboard.getNumber("setpoint", IntakeWrist.kMinRotation);
-    if (setpoint != newSetpoint) {
-      setpoint = newSetpoint;
-      this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-    }
+    // double newSetpoint = SmartDashboard.getNumber("setpoint", IntakeWrist.kMinRotation);
+    // if (setpoint != newSetpoint) {
+    //   setpoint = newSetpoint;
+    //   this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    // }
+    SmartDashboard.putNumber("INTAKE SETPOINT:", wristAngleSetpoint);
   }
 
   public void setAngle(double angle) {
@@ -154,7 +156,7 @@ public class Intake extends SubsystemBase {
   public void setWristAngleSetpoint(double ty){
     wristAngleSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= IntakeWrist.kMinRotation
     && wristAngleInterpolator.getInterpolatedValue(ty) <= IntakeWrist.kMaxRotation ?
-    wristAngleInterpolator.getInterpolatedValue(ty) : 0.0;
+    wristAngleInterpolator.getInterpolatedValue(ty) : IntakeWrist.kMinRotation;
   }
 
   public void setEnableIdleMode() {

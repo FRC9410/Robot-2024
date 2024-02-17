@@ -106,14 +106,18 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
     // System.out.println(this.encoder.getPosition());
     
-    double newSetpoint = SmartDashboard.getNumber("shooter setpoint", IntakeWrist.kMinRotation);
-    if (setpoint != newSetpoint) {
-      setpoint = newSetpoint;
-      this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-    }
+    // double newSetpoint = SmartDashboard.getNumber("shooter setpoint", IntakeWrist.kMinRotation);
+    // if (setpoint != newSetpoint) {
+    //   setpoint = newSetpoint;
+    //   this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
+    // }
 
-    SmartDashboard.putNumber("Shooter value", this.encoder.getPosition());
-    System.out.println(primaryWheel.getVelocity());
+    // SmartDashboard.putNumber("Shooter value", this.encoder.getPosition());
+    // System.out.println(primaryWheel.getVelocity());
+    
+    SmartDashboard.putNumber("SHOOTER SETPOINT:", shooterSetpoint);
+    SmartDashboard.putNumber("FEEDER SETPOINT:", feederSetpoint);
+    SmartDashboard.putNumber("SHOOTER ANGLE SETPOINT:", wristSetpoint);
   }
 
   public void setShooterVelocity(double velocity) {
@@ -132,9 +136,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setWristAngle(double angle) {
-    if ((wristAngle + angle) >= 0)
-    wristAngle += angle;
-    this.pidController.setReference(wristAngle, CANSparkMax.ControlType.kPosition);
+    this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
   }
 
   public void setWristAngle() {
@@ -147,7 +149,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feedOn(double velocity, double feedforward) {
-    this.feeder.setControl(voltageVelocity.withVelocity(80));
+    this.feeder.setControl(voltageVelocity.withVelocity(velocity));
   }
 
   public void feedOff() {

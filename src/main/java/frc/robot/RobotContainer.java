@@ -4,11 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.SingleFadeAnimation;
-import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
@@ -20,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.base.VoltageIntakeCommand;
+import frc.robot.commands.group.AutoShootNoteCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ShootNoteCommand;
@@ -60,7 +56,7 @@ public class RobotContainer {
       new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)
     ));
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
-    driverController.rightTrigger(0.5).whileTrue(new ShootNoteCommand(subsystems));
+    driverController.rightTrigger(0.5).whileTrue(new AutoShootNoteCommand(subsystems));
 
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
     copilotController.y().whileTrue(new ScoreAmpCommand(subsystems));
@@ -99,9 +95,9 @@ public class RobotContainer {
     double tx = subsystems.getVision().getTx(VisionType.SHOOTER);
 
     if(this.driverController.getRightTriggerAxis() > 0.5 && tx > 0) {
-      double pGain = 10.08;
+      double pGain = 0.08;
 
-      return Math.abs(tx) < 1 ? 0 : pGain * tx;
+      return Math.abs(tx) < 1 ? 0 : -pGain * tx;
     }
     else{
       return -getSpeed(this.driverController.getRightX()) * getMaxSpeed();
@@ -110,7 +106,9 @@ public class RobotContainer {
 
   private double getMaxSpeed() {
     if(this.driverController.getRightTriggerAxis() > 0.5
-    && subsystems.getVision().hasTarget(VisionType.SHOOTER)) {
+    && subsystems.getVision().hasTarget(VisionType.SHOOTER)
+    && (subsystems.getVision().getTagId(VisionType.SHOOTER) == 4 ||
+    subsystems.getVision().getTagId(VisionType.SHOOTER) == 7)) {
       return DriveConstants.MaxShootingSpeed;
     }
     if(this.driverController.getLeftTriggerAxis() > 0.5) {
