@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.base.AutoVoltageFeedCommand;
+import frc.robot.commands.base.AutoIntakeWristCommand;
+import frc.robot.commands.base.AutoShootCommand;
+import frc.robot.commands.base.AutoShooterWristCommand;
 import frc.robot.commands.base.IntakeCommand;
 import frc.robot.commands.base.ShootCommand;
 import frc.robot.commands.base.VoltageFeedCommand;
@@ -24,12 +28,14 @@ public class ShootNoteCommand extends SequentialCommandGroup {
     addCommands(
       new ParallelRaceGroup(
         new WaitCommand(1.5),
-        new ShootCommand(subsystems.getShooter(), 90),
-        new VoltageFeedCommand(subsystems.getShooter(), -45) //-58)
+        new AutoShootCommand(subsystems.getShooter()),
+        new AutoVoltageFeedCommand(subsystems.getShooter()), //-58)
+        new AutoShooterWristCommand(subsystems.getShooter()),
+        new AutoIntakeWristCommand(subsystems.getIntake())
       ),
       new ParallelCommandGroup(
-        new ShootCommand(subsystems.getShooter(), 90),
-        new VoltageFeedCommand(subsystems.getShooter(), -45), //-58),
+        new AutoShootCommand(subsystems.getShooter()),
+        new AutoVoltageFeedCommand(subsystems.getShooter()), //-58),
         new IntakeCommand(subsystems.getIntake(), 85, 8, 0)
       )
     );

@@ -20,11 +20,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.utils.LinearInterpolator;
 
 public class Intake extends SubsystemBase {
 
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
+  
+  private LinearInterpolator wristAngleInterpolator;
 
   private TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
   CANSparkMax primaryWrist = new CANSparkMax(IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
@@ -40,8 +43,10 @@ public class Intake extends SubsystemBase {
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
 
   private double setpoint;
+  private double wristAngleSetpoint;
   
   public Intake() {
+    this.wristAngleInterpolator = new LinearInterpolator(IntakeWrist.wristAngles);
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist, true);
@@ -88,6 +93,10 @@ public class Intake extends SubsystemBase {
 
   public void setAngle(double angle) {
     this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setAngle() {
+    this.pidController.setReference(wristAngleSetpoint, CANSparkMax.ControlType.kPosition);
   }
   
 
@@ -140,6 +149,10 @@ public class Intake extends SubsystemBase {
     configs.Voltage.PeakReverseVoltage = -12;
 
     motor.getConfigurator().apply(configs);
+  }
+
+  public void setWristAngleSetpoint(double ty){
+    wristAngleSetpoint = wristAngleInterpolator.getInterpolatedValue(ty);
   }
 
   public void setEnableIdleMode() {

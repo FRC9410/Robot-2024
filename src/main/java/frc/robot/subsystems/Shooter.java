@@ -23,10 +23,15 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.utils.LinearInterpolator;
 
 public class Shooter extends SubsystemBase {
   private SparkPIDController pidController;
   private RelativeEncoder encoder;
+
+  private LinearInterpolator shooterVelocityInterpolator;
+  private LinearInterpolator feederVelocityInterpolator;
+  private LinearInterpolator wristAngleInterpolator;
 
   private static final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
   private static final VelocityVoltage voltageVelocityFoc = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
@@ -51,9 +56,16 @@ public class Shooter extends SubsystemBase {
   private double wristAngle = 0;
 
   private double setpoint;
+  
+  private double shooterSetpoint;
+  private double feederSetpoint;
+  private double wristSetpoint;
 
   /** Creates a new Shooter. */
   public Shooter() {
+    this.shooterVelocityInterpolator = new LinearInterpolator(ShooterConstants.shooterSpeeds);
+    this.feederVelocityInterpolator = new LinearInterpolator(ShooterConstants.feederSpeeds);
+    this.wristAngleInterpolator = new LinearInterpolator(ShooterWrist.wristAngles);
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.setInverted(true);
@@ -110,6 +122,11 @@ public class Shooter extends SubsystemBase {
     this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
   }
 
+  public void setShooterVelocity() {
+    this.primaryWheel.setControl(voltageVelocity.withVelocity(-shooterSetpoint).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(voltageVelocity.withVelocity(shooterSetpoint-5).withFeedForward(ShooterConstants.kFF)); //95
+  }
+
   public void shooterOff() {
     this.primaryWheel.setControl(brake);
     this.secondaryWheel.setControl(brake);
@@ -119,6 +136,10 @@ public class Shooter extends SubsystemBase {
     if ((wristAngle + angle) >= 0)
     wristAngle += angle;
     this.pidController.setReference(wristAngle, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setWristAngle() {
+    this.pidController.setReference(wristSetpoint, CANSparkMax.ControlType.kPosition);
   }
 
   public void wristOff() {
@@ -138,6 +159,10 @@ public class Shooter extends SubsystemBase {
   public void setFeederVelocity(double velocity) {
     this.feeder.setControl(voltageVelocityFoc.withVelocity(velocity));
 
+  }
+
+  public void setFeederVelocity() {
+    this.feeder.setControl(voltageVelocityFoc.withVelocity(feederSetpoint));
   }
 
   public SparkPIDController getPIDController() {
@@ -191,6 +216,18 @@ public class Shooter extends SubsystemBase {
     configs.Voltage.PeakReverseVoltage = -12;
 
     motor.getConfigurator().apply(configs);
+  }
+
+  public void setShooterVelocitySetpoint(double ty){
+    shooterSetpoint = shooterVelocityInterpolator.getInterpolatedValue(ty);
+  }
+
+  public void setFeederVelocitySetpoint(double ty){
+    feederSetpoint = feederVelocityInterpolator.getInterpolatedValue(ty);
+  }
+
+  public void setWristAngleSetpoint(double ty){
+    wristSetpoint = wristAngleInterpolator.getInterpolatedValue(ty);
   }
 
   public void setEnableIdleMode() {

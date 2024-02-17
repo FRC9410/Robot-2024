@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -21,11 +22,13 @@ public class Robot extends TimedRobot {
   NetworkTableEntry tx;
   NetworkTableEntry ty;
   NetworkTableEntry ta;
+  CommandXboxController driverController ;
 
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
     robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
+    driverController = robotContainer.getDriverController();
     // tuning = new Tuning(robotContainer.getSubsystems());
     // robotContainer.playSong();
   }
@@ -76,7 +79,15 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (driverController.getRightTriggerAxis() > 0.5) {
+      double ty = robotContainer.table.getEntry("ty").getDouble(0.0);
+      robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ty);
+      robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ty);
+      robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ty);
+      robotContainer.getSubsystems().getIntake().setWristAngleSetpoint(ty);
+    }
+  }
 
   @Override
   public void teleopExit() {}

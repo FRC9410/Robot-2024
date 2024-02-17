@@ -43,8 +43,6 @@ import frc.robot.commands.base.IntakeCommand;
 import frc.robot.commands.base.ShootCommand;
 import frc.robot.commands.base.ShooterWristCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
-import frc.robot.commands.group.CenterNoteCommand;
-import frc.robot.commands.group.CenterNoteCommand2;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
