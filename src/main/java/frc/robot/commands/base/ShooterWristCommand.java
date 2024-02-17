@@ -11,11 +11,13 @@ public class ShooterWristCommand extends Command {
   /** Creates a new WristUp. */
   private Shooter shooter;
   private double position;
+  private boolean maintainPosition;
 
-  public ShooterWristCommand(Shooter shooter, double position) {
+  public ShooterWristCommand(Shooter shooter, double position, boolean maintainPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;
     this.position = position;
+    this.maintainPosition = maintainPosition;
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +33,9 @@ public class ShooterWristCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.shooter.wristOff();
+    if(!this.maintainPosition) {
+      this.shooter.wristOff();
+    }
   }
 
   // Returns true when the command should end.

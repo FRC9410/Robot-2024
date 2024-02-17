@@ -107,7 +107,7 @@ public class RobotContainer {
       return -this.driverController.getRightX() * getMaxSpeed();
     }
   }
-
+//check for left trigger too
   private double getMaxSpeed() {
     if(this.driverController.getRightTriggerAxis() > 0.5
     && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
