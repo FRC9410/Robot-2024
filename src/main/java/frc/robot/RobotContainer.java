@@ -42,8 +42,8 @@ public class RobotContainer {
 
   private void configureBindings() {
    subsystems.getDrivetrain().setDefaultCommand( // Drivetrain will execute this command periodically
-        subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-driverController.getLeftY() * getMaxSpeed()) // Drive forward with negative Y (forward)
-           .withVelocityY((-driverController.getLeftX() * getMaxSpeed())) // Drive left with negative X (left)
+        subsystems.getDrivetrain().applyRequest(() -> drive.withVelocityX(-getSpeed(driverController.getLeftY()) * getMaxSpeed()) // Drive forward with negative Y (forward)
+           .withVelocityY((-getSpeed(driverController.getLeftX()) * getMaxSpeed())) // Drive left with negative X (left)
            .withRotationalRate(getTurn()) // Drive counterclockwise with negative X (left)
        ));
 
@@ -104,10 +104,10 @@ public class RobotContainer {
       return Math.abs(tx) < 1 ? 0 : pGain * tx;
     }
     else{
-      return -this.driverController.getRightX() * getMaxSpeed();
+      return -getSpeed(this.driverController.getRightX()) * getMaxSpeed();
     }
   }
-//check for left trigger too
+
   private double getMaxSpeed() {
     if(this.driverController.getRightTriggerAxis() > 0.5
     && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) > 0) {
@@ -119,5 +119,10 @@ public class RobotContainer {
     else{
       return DriveConstants.MaxSpeed;
     }
+  }
+
+  private double getSpeed(double speed) {
+    double newSpeed = Math.pow(speed, 2);
+    return speed > 0 ? newSpeed : -newSpeed;
   }
 }
