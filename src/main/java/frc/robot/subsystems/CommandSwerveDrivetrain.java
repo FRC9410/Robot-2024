@@ -32,7 +32,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final PIDController rotationPidController =
+    public final PIDController forwardPidController =
+        new PIDController(DriveConstants.forwardKP, DriveConstants.forwardkI, DriveConstants.forwardkD);
+
+        
+    public final PIDController strafePidController =
+        new PIDController(DriveConstants.strafeKP, DriveConstants.strafekI, DriveConstants.strafekD);
+        
+    public final PIDController rotationPidController =
         new PIDController(DriveConstants.rotationKP, DriveConstants.rotationkI, DriveConstants.rotationkD);
 
     private final SwerveRequest.ApplyChassisSpeeds chassisSpeedRequest =
@@ -94,14 +101,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         .withVelocityY(-velocityYMetersPerSecond)
                         .withRotationalRate(-rotationRateRadiansPerSecond));
             break;
-            case TARGET_LOCK:
-            applyRequest(
-                () ->
-                    fieldRelative
-                        .withVelocityX(-velocityXMetersPerSecond)
-                        .withVelocityY(-velocityYMetersPerSecond)
-                        .withRotationalRate(getTargetLockRotation(rotationRateRadiansPerSecond)));
-            break;
         }
     }
 
@@ -110,29 +109,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      *     Right
      */
     public SwerveModulePosition[] getModulePositions() {
-    return super.m_modulePositions;
+        return super.m_modulePositions;
     }
 
     public SwerveModuleState[] getModuleStates() {
-    return super.getState().ModuleStates;
+        return super.getState().ModuleStates;
     }
 
     public SwerveModuleState[] getModuleTargets() {
-    return super.getState().ModuleTargets;
-    }
-
-    public Pose2d getPose() {
-    return super.m_odometry.getEstimatedPosition();
+        return super.getState().ModuleTargets;
     }
 
     public Supplier<Pose2d> getPoseSupplier() {
-    return new Supplier<Pose2d>() {
+        return new Supplier<Pose2d>() {
 
-        @Override
-        public Pose2d get() {
-        return getPose();
-        }
-    };
+            @Override
+            public Pose2d get() {
+                return getPose();
+            }
+        };
     }
 
     private SwerveDriveKinematics getKinematics() {
@@ -153,11 +148,15 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public void stopMotorsIntoX() {
-        applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+        applyRequest(() -> brake);
     }
 
     public void stopMotors() {
         drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
+    }
+
+    public Pose2d getPose() {
+        return super.m_odometry.getEstimatedPosition();
     }
 
     public void setPose(Pose2d poseToSet) {
@@ -182,15 +181,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     return chassisSpeeds;
     }
 
-    public double getTargetLockRotation(double tx) {
+    public double getTargetLockRotation(double tx, double offset) {
         // Increase kP based on horizontal velocity to reduce lag
         double vy = getChassisSpeeds().vyMetersPerSecond; // Horizontal velocity
         double kp = DriveConstants.rotationKP;
         kp *= Math.max(1, vy * 1);
         rotationPidController.setP(kp);
 
-        double rotation = -rotationPidController.calculate(0, tx);
+        double rotation = -rotationPidController.calculate(0, tx + offset);
         double output = rotation + Math.copySign(DriveConstants.targetLockKFF, rotation);
+        return output;
+    }
+
+    public double getTargetLockForward(double ty, double offset) {
+        double forward = -forwardPidController.calculate(0, ty + offset);
+        double output = forward + Math.copySign(DriveConstants.targetLockKFF, forward);
+        return output;
+    }
+
+    public double getTargetLockStrafe(double tx, double offset) {
+        double strafe = -strafePidController.calculate(0, tx + offset);
+        double output = strafe + Math.copySign(DriveConstants.targetLockKFF, strafe);
         return output;
     }
 
@@ -223,6 +234,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public enum DriveMode {
-    ROBOT_RELATIVE, FIELD_RELATIVE, TARGET_LOCK
+    ROBOT_RELATIVE, FIELD_RELATIVE
     }
 }

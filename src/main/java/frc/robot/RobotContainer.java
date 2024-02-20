@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.base.DefaultDriveCommand;
-import frc.robot.commands.base.SpeakerLockDriveCommand;
+import frc.robot.commands.base.AprilTagLockDriveCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.AutoShootNoteCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
@@ -46,22 +46,26 @@ public class RobotContainer {
 
     driverController.leftTrigger(0.5).whileTrue(
       new IntakeNoteCommand(subsystems)
-        .alongWith(new SpeakerLockDriveCommand(
+        .alongWith(new AprilTagLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
           driverController.getLeftY(),
-          driverController.getLeftX())))
+          driverController.getLeftX(),
+          driverController.getRightX(),
+          driverController.a().getAsBoolean())))
         .onFalse(new ParallelRaceGroup(
           new WaitCommand(2),
           new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
 
     driverController.rightTrigger(0.5).whileTrue(
       new AutoShootNoteCommand(subsystems)
-        .alongWith(new SpeakerLockDriveCommand(
+        .alongWith(new AprilTagLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
           driverController.getLeftY(),
-          driverController.getLeftX())));
+          driverController.getLeftX(),
+          driverController.getRightX(),
+          driverController.a().getAsBoolean())));
     
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
   }

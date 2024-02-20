@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -78,12 +80,23 @@ public final class Constants
     public static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
     public static final double staticKFF = 0; // meters per second
+
+    public static final double forwardKP = 0.15;
+    public static final double forwardkI = 0.0;
+    public static final double forwardkD = 0.0;
+
+    public static final double strafeKP = 0.15;
+    public static final double strafekI = 0.0;
+    public static final double strafekD = 0.0;
+    
     public static final double rotationKP = 0.15;
     public static final double rotationkI = 0.0;
     public static final double rotationkD = 0.0;
 
     public static final double targetLockKFF = 0.0;
     public static final double targetLockKTolerance = 0.25;
+
+    public static final List<Integer> moveToTags = List.of(99);
   }
 
   public static final class ModuleConstants {
