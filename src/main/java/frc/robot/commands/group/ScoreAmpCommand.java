@@ -24,19 +24,19 @@ public class ScoreAmpCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ParallelRaceGroup(
-        new WaitCommand(1),
+        new WaitCommand(0.25),
         new FeedCommand(subsystems.getShooter(), -30, -8, 1.8),
         new IntakeCommand(subsystems.getIntake(), 30, 12, 0)
       ),
       new ParallelRaceGroup(
         new ShooterWristCommand(subsystems.getShooter(), 16, true),
-        new WaitCommand(1)
+        new WaitCommand(0.4)
       ),
       new ParallelRaceGroup(
-        new WaitCommand(1),
+        new WaitCommand(0.4),
         new ShooterWristCommand(subsystems.getShooter(), 16, false),
-        new ShootCommand(subsystems.getShooter(), 30),
-        new VoltageFeedCommand(subsystems.getShooter(), -30)
+        new ShootCommand(subsystems.getShooter(), 60),
+        new VoltageFeedCommand(subsystems.getShooter(), -60)
       )
     );
   }

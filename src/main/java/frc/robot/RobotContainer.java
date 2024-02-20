@@ -19,6 +19,7 @@ import frc.robot.commands.group.AutoShootNoteCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ShootNoteCommand;
+import frc.robot.commands.group.ShootTrapCommand;
 import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.Vision.VisionType;
 
@@ -59,7 +60,8 @@ public class RobotContainer {
     driverController.rightTrigger(0.5).whileTrue(new AutoShootNoteCommand(subsystems));
 
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
-    copilotController.y().whileTrue(new ScoreAmpCommand(subsystems));
+    copilotController.y().onTrue(new ScoreAmpCommand(subsystems));
+    copilotController.b().whileTrue(new ShootTrapCommand(subsystems));
   }
 
   public RobotContainer() {
@@ -94,10 +96,10 @@ public class RobotContainer {
   private double getTurn() {
     double tx = subsystems.getVision().getTx(VisionType.SHOOTER);
 
-    if(this.driverController.getRightTriggerAxis() > 0.5 && tx > 0) {
+    if(this.driverController.getRightTriggerAxis() > 0.5 && subsystems.getVision().hasTarget(VisionType.SHOOTER)) {
       double pGain = 0.08;
 
-      return Math.abs(tx) < 1 ? 0 : -pGain * tx;
+      return Math.abs(tx) < 0.5 ? 0 : -pGain * tx;
     }
     else{
       return -getSpeed(this.driverController.getRightX()) * getMaxSpeed();
@@ -105,10 +107,7 @@ public class RobotContainer {
   }
 
   private double getMaxSpeed() {
-    if(this.driverController.getRightTriggerAxis() > 0.5
-    && subsystems.getVision().hasTarget(VisionType.SHOOTER)
-    && (subsystems.getVision().getTagId(VisionType.SHOOTER) == 4 ||
-    subsystems.getVision().getTagId(VisionType.SHOOTER) == 7)) {
+    if(this.driverController.getRightTriggerAxis() > 0.5) {
       return DriveConstants.MaxShootingSpeed;
     }
     if(this.driverController.getLeftTriggerAxis() > 0.5) {

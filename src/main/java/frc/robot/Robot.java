@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     if(hasTarget && ty >= VisionConstants.kMaxShooterDistance
     && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4 ||
     robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
-      robotContainer.getSubsystems().getLeds().setStrobeAnimtation(255, 121, 198);
+      robotContainer.getSubsystems().getLeds().setFadeAnimtation(255, 121, 198);
     }
     else {
       robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
