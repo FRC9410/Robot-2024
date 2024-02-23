@@ -85,8 +85,8 @@ public class Shooter extends SubsystemBase {
     this.pidController.setFF(ShooterWrist.kFF);
     this.pidController.setOutputRange(ShooterWrist.kMinOutput, ShooterWrist.kMaxOutput);
     
-    pidController.setSmartMotionMaxAccel(1000, 0);
-    pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
+    pidController.setSmartMotionMaxAccel(1/60, 0);
+    pidController.setSmartMotionMaxVelocity(ShooterWrist.kMaxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
     
     this.setpoint = ShooterWrist.kMinRotation;
@@ -95,8 +95,8 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
 
 
-    // setShooterConfigs(primaryWheel);
-    // setShooterConfigs(secondaryWheel);
+    setShooterConfigs(primaryWheel);
+    setShooterConfigs(secondaryWheel);
     setFeederConfigs(feeder);
 
   }
@@ -118,6 +118,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("SHOOTER SETPOINT:", shooterSetpoint);
     SmartDashboard.putNumber("FEEDER SETPOINT:", feederSetpoint);
     SmartDashboard.putNumber("SHOOTER ANGLE SETPOINT:", wristSetpoint);
+    SmartDashboard.putNumber("Shooter Wrist:", encoder.getPosition());
   }
 
   public void setShooterVelocity(double velocity) {
@@ -192,7 +193,7 @@ public class Shooter extends SubsystemBase {
   private static void setShooterConfigs(TalonFX motor) {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 0.0; // An error of 1 rotation per second results in 2V output
+    configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
     configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
     configs.Slot0.kD = 0.0; // A change of 1 rotation per second squared results in 0.01 volts output
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
@@ -207,7 +208,7 @@ public class Shooter extends SubsystemBase {
   private static void setFeederConfigs(TalonFX motor) {
     TalonFXConfiguration configs = new TalonFXConfiguration();
     /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
-    configs.Slot0.kP = 0.3; // An error of 1 rotation per second results in 2V output
+    configs.Slot0.kP = 0.13; // An error of 1 rotation per second results in 2V output
     configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
     configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
@@ -235,7 +236,9 @@ public class Shooter extends SubsystemBase {
   public boolean isShooterReady() {
     return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 5)
     && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 10)
-    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint)-5;
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint)-5
+    && encoder.getPosition() > wristSetpoint - 0.3
+    && encoder.getPosition() < wristSetpoint - 0.2;
   }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);

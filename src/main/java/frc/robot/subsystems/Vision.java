@@ -12,10 +12,16 @@ import frc.robot.Constants.VisionConstants;
 public class Vision extends SubsystemBase {
 
   public NetworkTable shooterTable;
+  public NetworkTable intakeTable;
 
   /** Creates a new Vision. */
   public Vision() {
     shooterTable = NetworkTableInstance.getDefault().getTable(VisionConstants.kShooterTableName);
+    shooterTable.getEntry("ledMode").setNumber(1);
+    shooterTable.getEntry("pipeline").setNumber(1);
+    
+    intakeTable = NetworkTableInstance.getDefault().getTable(VisionConstants.kIntakeTableName);
+    intakeTable.getEntry("ledMode").setNumber(1);
   }
 
   @Override
@@ -28,7 +34,11 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTy(VisionType type) {
-    return  getTable(type).getEntry("ty").getDouble(0);
+    return getTable(type).getEntry("ty").getDouble(0);
+  }
+
+  public double getTa(VisionType type) {
+    return getTable(type).getEntry("ta").getDouble(0);
   }
 
   public int getTagId(VisionType type) {

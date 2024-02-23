@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.base.DefaultDriveCommand;
+import frc.robot.commands.base.GamePieceLockedDriveCommand;
 import frc.robot.commands.base.AprilTagLockDriveCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.AutoShootNoteCommand;
@@ -28,12 +29,6 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
 
   public RobotContainer() {
-    subsystems.getDrivetrain().setDefaultCommand(
-      new DefaultDriveCommand(
-        subsystems.getDrivetrain(),
-        driverController.getLeftY(),
-        driverController.getLeftX(),
-        driverController.getRightX()));
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
 
     configurePilotBindings();
@@ -43,29 +38,38 @@ public class RobotContainer {
 
   private void configurePilotBindings() {
     driverController.start().onTrue(subsystems.getDrivetrain().runOnce(() -> subsystems.getDrivetrain().seedFieldRelative()));
+    
+    subsystems.getDrivetrain().setDefaultCommand(
+      new DefaultDriveCommand(
+        subsystems.getDrivetrain(),
+        driverController));
 
     driverController.leftTrigger(0.5).whileTrue(
       new IntakeNoteCommand(subsystems)
-        .alongWith(new AprilTagLockDriveCommand(
+        /*.alongWith(new AprilTagLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
-          driverController.getLeftY(),
-          driverController.getLeftX(),
-          driverController.getRightX(),
-          driverController.a().getAsBoolean())))
+          driverController,
+          driverController.a().getAsBoolean()))*/)
         .onFalse(new ParallelRaceGroup(
           new WaitCommand(2),
           new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
+
+    // driverController.leftTrigger(0.5).whileTrue(
+    //   new GamePieceLockedDriveCommand(
+    //     subsystems.getDrivetrain(),
+    //     subsystems.getVision(),
+    //     driverController,
+    //     driverController.a().getAsBoolean()));
 
     driverController.rightTrigger(0.5).whileTrue(
       new AutoShootNoteCommand(subsystems)
         .alongWith(new AprilTagLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
-          driverController.getLeftY(),
-          driverController.getLeftX(),
-          driverController.getRightX(),
-          driverController.a().getAsBoolean())));
+          driverController)));
+
+
     
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
   }

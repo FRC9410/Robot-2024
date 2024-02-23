@@ -31,7 +31,8 @@ public final class Constants
 
   public static final class VisionConstants {
     public static final String kShooterTableName = "limelight-back";
-    public static final double kMaxShooterDistance = -4.5; // expressed as tx from limelight
+    public static final String kIntakeTableName = "limelight-front";
+    public static final double kMaxShooterDistance = 0.3; // expressed as tx from limelight
   }
 
   public static final class DriveConstants {
@@ -75,28 +76,28 @@ public final class Constants
     public static final boolean kGyroReversed = false;
 
     public static final double MaxSpeed = 6; // 6 meters per second desired top speed
-    public static final double MaxShootingSpeed = 3; // 6 meters per second desired top speed
-    public static final double MaxIntakingSpeed = 3; // 6 meters per second desired top speed
+    public static final double MaxShootingSpeed = 2; // 6 meters per second desired top speed
+    public static final double MaxIntakingSpeed = 2; // 6 meters per second desired top speed
     public static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
     public static final double staticKFF = 0; // meters per second
 
-    public static final double forwardKP = 0.15;
+    public static final double forwardKP = 0.11;
     public static final double forwardkI = 0.0;
     public static final double forwardkD = 0.0;
 
-    public static final double strafeKP = 0.15;
+    public static final double strafeKP = 0.11;
     public static final double strafekI = 0.0;
     public static final double strafekD = 0.0;
     
-    public static final double rotationKP = 0.15;
+    public static final double rotationKP = 0.11;
     public static final double rotationkI = 0.0;
     public static final double rotationkD = 0.0;
 
     public static final double targetLockKFF = 0.0;
     public static final double targetLockKTolerance = 0.25;
 
-    public static final List<Integer> moveToTags = List.of(99);
+    public static final List<Integer> moveToTags = List.of(5);
   }
 
   public static final class ModuleConstants {
@@ -207,18 +208,20 @@ public final class Constants
     public static final double allowedError = 0;
 
     public static final double[][] wristAngles = {
-      {-3.5, .11},
-      {-2.5, .11},
-      {-0.89, .11},
-      {0.91, .11},
-      {1.77, .11},
-      {4.62, .1125},
-      {7.12, .115},
-      {9.38, .12},
-      {12.9, .12},
-      {16.38, .12},
-      {20.7, .12}
+      {0.3, .11},
+      {0.34, .11},
+      {0.37, .11},
+      {0.413, .11},
+      {0.467, .11},
+      {0.536, .1125},
+      {0.632, .115},
+      {0.741, .12},
+      {0.82, .12},
+      {0.939, .12},
+      {1.027, .12}
     };
+
+    //copy the above array and subtract 20.7 from every value
   }
 
   public static final class ShooterWrist
@@ -239,23 +242,24 @@ public final class Constants
     public static double kMinOutput = -0.5;
     public static double kMinRotation = 0.0;
     public static double kMaxRotation = 16.0;
+    public static double kMaxVel = 1/60;
 
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
 
     public static final double [][] wristAngles = {
-      {-3.5, 2.775},
-      {-2.5, 2.725},
-      {-0.89, 2.7},
-      {0.91, 2.4},
-      {1.77, 2.25},
-      {4.62, 1.9},
-      {7.12, 1.4},
-      {9.38, 0.8},
-      {12.9, 0},
-      {16.38, 0},
-      {20.7, 0}
+      {0.3, 2.775},
+      {0.34, 2.725},
+      {0.37, 2.7},
+      {0.413, 2.4},
+      {0.467, 2.25},
+      {0.536, 1.9},
+      {0.632, 1.4},
+      {0.741, 0.8},
+      {0.82, 0},
+      {0.939, 0},
+      {1.027, 0}
     };
   }
 
@@ -265,31 +269,31 @@ public final class Constants
     public static double kFF = 4.75;
 
     public static final double[][] shooterSpeeds = {
-      {-3.5, 100},
-      {-2.5, 95},
-      {-0.89, 95},
-      {0.91, 90},
-      {1.77, 80},
-      {4.62, 85},
-      {7.12, 80},
-      {9.38, 80},
-      {12.9, 80},
-      {16.38, 80},
-      {20.7, 80}
+      {0.3, 100},
+      {0.34, 95},
+      {0.37, 95},
+      {0.413, 90},
+      {0.467, 80},
+      {0.536, 85},
+      {0.632, 80},
+      {0.741, 80},
+      {0.82, 80},
+      {0.939, 80},
+      {1.027, 80}
     };
 
     public static final double[][] feederSpeeds = {
-      {-3.5, -45},
-      {-2.5, -45},
-      {-0.89, -45},
-      {0.91, -45},
-      {1.77, -40},
-      {4.62, -40},
-      {7.12, -40},
-      {9.38, -40},
-      {12.9, -40},
-      {16.38, -40},
-      {20.7, -40}
+      {0.3, -45},
+      {0.34, -45},
+      {0.37, -45},
+      {0.413, -45},
+      {0.467, -40},
+      {0.536, -40},
+      {0.632, -40},
+      {0.741, -40},
+      {0.82, -40},
+      {0.939, -40},
+      {1.027, -40}
     };
   }
 

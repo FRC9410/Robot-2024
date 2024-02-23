@@ -6,6 +6,7 @@ package frc.robot.commands.base;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
@@ -15,20 +16,14 @@ import frc.robot.utils.Utility;
 
 public class AprilTagLockDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
-  private double forward;
-  private double strafe;
-  private double rotation;
+  CommandXboxController controller;
   private Vision vision;
-  private boolean moveTo;
   private int targetTagId;
 
-  public AprilTagLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, double forward, double strafe, double rotation, boolean moveTo) {
+  public AprilTagLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
     this.drivetrain = drivetrain;
-    this.forward = forward;
-    this.strafe = strafe;
     this.vision = vision;
-    this.rotation = rotation;
-    this.moveTo = moveTo;
+    this.controller = controller;
     targetTagId = 0;
 
     addRequirements(drivetrain);
@@ -36,17 +31,21 @@ public class AprilTagLockDriveCommand extends Command {
 
   @Override
   public void initialize() {
-    setPidControllers(vision.getTagId(VisionType.SHOOTER));
+    // setPidControllers(vision.getTagId(VisionType.SHOOTER));
   }
 
   @Override
   public void execute() {
     boolean hasTarget = vision.hasTarget(VisionType.SHOOTER);
+    boolean moveTo = false; // controller.a().getAsBoolean();
     double tx = vision.getTx(VisionType.SHOOTER);
     double rotationError = drivetrain.getPose().getRotation().getRadians();
     int tagId = 0;
     if(hasTarget) {
       tagId = vision.getTagId(VisionType.SHOOTER);
+      if(tagId == 3 || tagId == 8) {
+        hasTarget = false;
+      }
     }
 
     moveTo = moveTo && DriveConstants.moveToTags.contains(tagId);
@@ -68,7 +67,7 @@ public class AprilTagLockDriveCommand extends Command {
       return drivetrain.getTargetLockForward(ty, 0);
     }
     else {
-      return Utility.getSpeed(forward) * DriveConstants.MaxShootingSpeed;
+      return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
     }
   }
 
@@ -78,7 +77,7 @@ public class AprilTagLockDriveCommand extends Command {
       return drivetrain.getTargetLockStrafe(strafeError, 0);
     }
     else {
-      return Utility.getSpeed(strafe) * DriveConstants.MaxShootingSpeed;
+      return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
     }
   }
 
@@ -87,25 +86,10 @@ public class AprilTagLockDriveCommand extends Command {
       return drivetrain.getTargetLockRotation(rotationError, 0);
     }
     else if(hasTarget) {
-      return drivetrain.getTargetLockRotation(tx, 0);
+      return -drivetrain.getTargetLockRotation(tx, 0);
     }
     else {
-      return Utility.getSpeed(rotation) * DriveConstants.MaxIntakingSpeed;
-    }
-  }
-
-  private void setPidControllers(int tagId) {
-    if(tagId != targetTagId) {
-      drivetrain.forwardPidController.setSetpoint(getForwardSetpoint(tagId));
-      drivetrain.forwardPidController.reset();
-
-      drivetrain.strafePidController.setSetpoint(0.0);
-      drivetrain.strafePidController.reset();
-
-      drivetrain.rotationPidController.enableContinuousInput(-Math.PI, Math.PI);
-      drivetrain.rotationPidController.setSetpoint(getRotationSetpoint(tagId));
-      drivetrain.rotationPidController.reset();
-      targetTagId = tagId;
+      return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxIntakingSpeed;
     }
   }
 

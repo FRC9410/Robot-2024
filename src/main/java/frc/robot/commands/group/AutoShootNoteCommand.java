@@ -26,8 +26,8 @@ public class AutoShootNoteCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ParallelRaceGroup(
-        new WaitCommand(1),
-        // new TargetCheckCommand(subsystems),
+        // new WaitCommand(1),
+        new TargetCheckCommand(subsystems),
         new AutoShootCommand(subsystems.getShooter()),
         new AutoVoltageFeedCommand(subsystems.getShooter()),
         new AutoShooterWristCommand(subsystems.getShooter()),

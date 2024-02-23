@@ -5,6 +5,7 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
@@ -12,29 +13,24 @@ import frc.robot.utils.Utility;
 
 public class DefaultDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
-  private double forward;
-  private double strafe;
-  private double rotation;
-
-  public DefaultDriveCommand(CommandSwerveDrivetrain drivetrain, double forward, double strafe, double rotation) {
+  CommandXboxController controller;
+  public DefaultDriveCommand(CommandSwerveDrivetrain drivetrain, CommandXboxController controller) {
     this.drivetrain = drivetrain;
-    this.forward = forward;
-    this.strafe = strafe;
-    this.rotation = rotation;
+    this.controller = controller;
     addRequirements(drivetrain);
   }
 
   @Override
   public void execute() {
-    this.drivetrain.drive(
-        Utility.getSpeed(forward) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(strafe) * DriveConstants.MaxSpeed,
-        Utility.getSpeed(rotation) * DriveConstants.MaxSpeed,
-        DriveMode.FIELD_RELATIVE);
+    drivetrain.drive(
+      Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxSpeed,
+      Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxSpeed,
+      Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxSpeed,
+      DriveMode.FIELD_RELATIVE);
   }
 
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
+    drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 }
