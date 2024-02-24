@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("ty", robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER));
     SmartDashboard.putNumber("tx", robotContainer.getSubsystems().getVision().getTx(VisionType.SHOOTER));
+    SmartDashboard.putNumber("ta", robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER));
   } 
 
   @Override

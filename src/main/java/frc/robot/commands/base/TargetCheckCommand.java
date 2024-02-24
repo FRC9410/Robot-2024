@@ -33,9 +33,10 @@ public class TargetCheckCommand extends Command {
   @Override
   public boolean isFinished() {
     System.out.println(subsystems.getVision().getTa(VisionType.SHOOTER));
+    System.out.println(subsystems.getShooter().isShooterReady());
     if (subsystems.getVision().hasTarget(VisionType.SHOOTER)
     && Math.abs(subsystems.getVision().getTx(VisionType.SHOOTER)) < 2.5
-    && subsystems.getVision().getTa(VisionType.SHOOTER) >= VisionConstants.kMaxShooterDistance
+    && subsystems.getVision().getTa(VisionType.SHOOTER) >= 0.4
     && subsystems.getShooter().isShooterReady()
     ){
       return true;

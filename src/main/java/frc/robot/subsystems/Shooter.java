@@ -53,8 +53,6 @@ public class Shooter extends SubsystemBase {
 
   private double setpoint;
   
-  private double shooterSetpoint;
-  private double feederSetpoint;
   private double wristSetpoint;
 
   /** Creates a new Shooter. */
@@ -86,12 +84,11 @@ public class Shooter extends SubsystemBase {
     
     this.setpoint = ShooterWrist.kMinRotation;
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
-    SmartDashboard.putNumber("shooter setpoint", setpoint);
     // This method will be called once per scheduler run
 
 
-    setShooterConfigs(primaryWheel);
-    setShooterConfigs(secondaryWheel);
+    // setShooterConfigs(primaryWheel);
+    // setShooterConfigs(secondaryWheel);
     setFeederConfigs(feeder);
 
   }
@@ -107,18 +104,28 @@ public class Shooter extends SubsystemBase {
     //   this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     // }
 
-    // SmartDashboard.putNumber("Shooter value", this.encoder.getPosition());
+    SmartDashboard.putNumber("Shooter Wrist Actual", this.encoder.getPosition());
+    SmartDashboard.putNumber("Shooter Wrist Setpoint", wristSetpoint);
+    SmartDashboard.putNumber("Primary Wheel Actual", primaryWheel.getRotorVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Secondary Wheel Actual", secondaryWheel.getRotorVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Primary Wheel Current", primaryWheel.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Secondary Wheel Current", secondaryWheel.getSupplyCurrent().getValueAsDouble());
     // System.out.println(primaryWheel.getVelocity());
   }
 
   public void setShooterVelocity(double velocity) {
-    this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity).withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
+    // this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity).withFeedForward(-ShooterConstants.kFF)); //-100
+    // this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
+    primaryWheel.set(-100);
+    secondaryWheel.set(100);
   }
 
   public void setShooterVelocity() {
-    this.primaryWheel.setControl(voltageVelocity.withVelocity(-ShooterConstants.kSpeakerShooterSpeed).withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(voltageVelocity.withVelocity(ShooterConstants.kSpeakerShooterSpeed-5).withFeedForward(ShooterConstants.kFF)); //95
+    // this.primaryWheel.setControl(voltageVelocity.withVelocity(-90).withFeedForward(-4.5)); //-100
+    // this.secondaryWheel.setControl(voltageVelocity.withVelocity(85).withFeedForward(4.5)); //95
+    
+    primaryWheel.set(-100);
+    secondaryWheel.set(100);
   }
 
   public void shooterOff() {
@@ -189,8 +196,9 @@ public class Shooter extends SubsystemBase {
     configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 16;
-    configs.Voltage.PeakReverseVoltage = 
-    -16;
+    configs.Voltage.PeakReverseVoltage = -16;
+    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
+    configs.CurrentLimits.SupplyCurrentLimit = 40;
 
     motor.getConfigurator().apply(configs);
   }
@@ -216,11 +224,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 5)
-    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > (Math.abs(shooterSetpoint) - 10)
-    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(feederSetpoint)-5
+    return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > 80
+    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > 80
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(ShooterConstants.kSpeakerFeederSpeed) - 5
     && encoder.getPosition() > wristSetpoint - 0.3
-    && encoder.getPosition() < wristSetpoint - 0.2;
+    && encoder.getPosition() < wristSetpoint - 0.15;
   }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);

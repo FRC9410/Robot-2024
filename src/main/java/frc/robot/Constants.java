@@ -76,13 +76,13 @@ public final class Constants
     public static final boolean kGyroReversed = false;
 
     public static final double MaxSpeed = 6; // 6 meters per second desired top speed
-    public static final double MaxShootingSpeed = 1; // 6 meters per second desired top speed
+    public static final double MaxShootingSpeed = 3; // 6 meters per second desired top speed
     public static final double MaxIntakingSpeed = 1; // 6 meters per second desired top speed
     public static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
     public static final double staticKFF = 0; // meters per second
 
-    public static final double forwardKP = 0.11;
+    public static final double forwardKP = 5.5;
     public static final double forwardkI = 0.0;
     public static final double forwardkD = 0.0;
 
@@ -97,7 +97,7 @@ public final class Constants
     public static final double targetLockKFF = 0.0;
     public static final double targetLockKTolerance = 0.25;
 
-    public static final List<Integer> moveToTags = List.of(5);
+    public static final List<Integer> moveToTags = List.of(4, 5, 7);
   }
 
   public static final class ModuleConstants {
@@ -235,17 +235,12 @@ public final class Constants
     public static final int kCPR = 8192;
 
     public static final double [][] wristAngles = {
-      {0.3, 2.775},
-      {0.34, 2.725},
-      {0.37, 2.7},
-      {0.413, 2.4},
-      {0.467, 2.25},
-      {0.536, 1.9},
-      {0.632, 1.4},
-      {0.741, 0.8},
-      {0.82, 0},
-      {0.939, 0},
-      {1.027, 0}
+      {1.13, 0.3},
+      {0.77, 0.5}, //1.1
+      {0.59, 1.1}, //1.9
+      {0.44, 1.8}, //2.3
+      {0.4, 2.4},  //2.5
+      {0.34, 2.6}
     };
   }
 
@@ -253,7 +248,7 @@ public final class Constants
   {
     public static double kP = 0.56;
     public static double kFF = 4.75;
-    public static double kSpeakerShooterSpeed = 90;
+    public static double kSpeakerShooterSpeed = 70;
     public static double kSpeakerFeederSpeed = -45;
   }
 

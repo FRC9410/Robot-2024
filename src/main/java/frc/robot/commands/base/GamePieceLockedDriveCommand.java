@@ -34,12 +34,13 @@ public class GamePieceLockedDriveCommand extends Command {
   public void execute() {
     boolean hasTarget = vision.hasTarget(VisionType.INTAKE);
     double tx = vision.getTx(VisionType.INTAKE);
+    boolean moveTo = controller.a().getAsBoolean();
 
     drivetrain.drive(
-      getForward(vision.getTy(VisionType.INTAKE), hasTarget),
+      getForward(vision.getTy(VisionType.INTAKE), hasTarget, moveTo),
       getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
-      DriveMode.FIELD_RELATIVE);
+      hasTarget && moveTo ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
   }
 
   @Override
@@ -47,9 +48,9 @@ public class GamePieceLockedDriveCommand extends Command {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 
-  private double getForward(double ty, boolean hasTarget) {
+  private double getForward(double ta, boolean hasTarget, boolean moveTo) {
     if(hasTarget && moveTo) {
-      return drivetrain.getTargetLockForward(ty, 0);
+      return -0.4;
     }
     else {
       return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
@@ -57,16 +58,10 @@ public class GamePieceLockedDriveCommand extends Command {
   }
 
   private double getStrafe(double tx, boolean hasTarget) {
-    if(hasTarget && moveTo) {
-      return 0;
-    }
-    else {
-      return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
-    }
+    return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
   }
 
   private double getRotation(double tx, boolean hasTarget) {
-    System.out.println("locking...");
     if(hasTarget) {
       System.out.println(-drivetrain.getTargetLockRotation(tx, 0));
       return -drivetrain.getTargetLockRotation(tx, 0);

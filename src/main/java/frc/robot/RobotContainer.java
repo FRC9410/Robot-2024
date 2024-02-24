@@ -37,7 +37,10 @@ public class RobotContainer {
   }
 
   private void configurePilotBindings() {
-    driverController.start().onTrue(subsystems.getDrivetrain().runOnce(() -> subsystems.getDrivetrain().seedFieldRelative()));
+    driverController.start().onTrue(subsystems.getDrivetrain().runOnce(() -> {
+      subsystems.getDrivetrain().resetPose();
+      subsystems.getDrivetrain().seedFieldRelative();
+    }));
     
     subsystems.getDrivetrain().setDefaultCommand(
       new DefaultDriveCommand(
@@ -62,7 +65,7 @@ public class RobotContainer {
         driverController)
         .alongWith(new IntakeNoteCommand(subsystems)))
         .onFalse(new ParallelRaceGroup(
-          new WaitCommand(2),
+          new WaitCommand(1),
           new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
 
     driverController.rightTrigger(0.5).whileTrue(

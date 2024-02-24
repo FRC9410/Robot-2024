@@ -39,9 +39,8 @@ public class AprilTagLockDriveCommand extends Command {
   @Override
   public void execute() {
     boolean hasTarget = vision.hasTarget(VisionType.SHOOTER);
-    boolean moveTo = false; // controller.a().getAsBoolean();
+    boolean moveTo = controller.a().getAsBoolean();
     double tx = vision.getTx(VisionType.SHOOTER);
-    double rotationError = drivetrain.getPose().getRotation().getRadians();
     int tagId = 0;
     if(hasTarget) {
       tagId = vision.getTagId(VisionType.SHOOTER);
@@ -53,9 +52,9 @@ public class AprilTagLockDriveCommand extends Command {
     moveTo = moveTo && DriveConstants.moveToTags.contains(tagId);
 
     drivetrain.drive(
-      getForward(vision.getTy(VisionType.SHOOTER), hasTarget, moveTo),
-      getStrafe(tx, rotationError, hasTarget, moveTo),
-      getRotation(tx, rotationError, hasTarget, moveTo),
+      getForward(vision.getTa(VisionType.SHOOTER), hasTarget, moveTo),
+      getStrafe(tx, hasTarget),
+      getRotation(tx, hasTarget),
       DriveMode.FIELD_RELATIVE);
   }
 
@@ -64,35 +63,28 @@ public class AprilTagLockDriveCommand extends Command {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 
-  private double getForward(double ty, boolean hasTarget, boolean moveTo) {
+  private double getForward(double ta, boolean hasTarget, boolean moveTo) {
     if(hasTarget && moveTo) {
-      return drivetrain.getTargetLockForward(ty, 0);
+      return drivetrain.getTargetLockForward(0.7 - ta, 0);
     }
     else {
       return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
     }
   }
 
-  private double getStrafe(double tx, double rotationError, boolean hasTarget, boolean moveTo) {
-    if(hasTarget && moveTo) {
-      double strafeError = tx - Rotation2d.fromRadians(rotationError).getDegrees();
-      return drivetrain.getTargetLockStrafe(strafeError, 0);
+  private double getStrafe(double tx, boolean hasTarget) {
+    if(hasTarget) {
+      return -drivetrain.getTargetLockStrafe(tx, 0);
     }
     else {
       return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
     }
   }
 
-  private double getRotation(double tx, double rotationError, boolean hasTarget, boolean moveTo) {
-    if(hasTarget && moveTo) {
-      return drivetrain.getTargetLockRotation(rotationError, 0);
-    }
-    else if(hasTarget) {
-      return -drivetrain.getTargetLockRotation(tx, 0);
-    }
-    else {
-      return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxIntakingSpeed;
-    }
+  private double getRotation(double tx, boolean hasTarget) {
+    double poseRotation = drivetrain.getPose().getRotation().getDegrees();
+    double poseError = poseRotation < 180 ? poseRotation + 180 : poseRotation - 180;
+    return -drivetrain.getRotationLockRotation(poseError, 0);
   }
 
   // TODO: put cases for different tag ids
