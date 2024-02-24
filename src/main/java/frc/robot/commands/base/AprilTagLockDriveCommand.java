@@ -33,6 +33,7 @@ public class AprilTagLockDriveCommand extends Command {
   @Override
   public void initialize() {
     // setPidControllers(vision.getTagId(VisionType.SHOOTER));
+    vision.setPipeline(VisionType.SHOOTER, 1);
   }
 
   @Override

@@ -19,22 +19,15 @@ public class GamePieceLockedDriveCommand extends Command {
   private Vision vision;
   private boolean moveTo;
 
-  public GamePieceLockedDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller, boolean moveTo) {
+  public GamePieceLockedDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
     this.drivetrain = drivetrain;
     this.vision = vision;
-    this.moveTo = moveTo;
     this.controller = controller;
     addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
-    drivetrain.forwardPidController.setSetpoint(0.0);
-    drivetrain.forwardPidController.reset();
-
-    drivetrain.rotationPidController.enableContinuousInput(-Math.PI, Math.PI);
-    drivetrain.rotationPidController.setSetpoint(0.0);
-    drivetrain.rotationPidController.reset();
   }
 
   @Override
@@ -43,8 +36,8 @@ public class GamePieceLockedDriveCommand extends Command {
     double tx = vision.getTx(VisionType.INTAKE);
 
     drivetrain.drive(
-      getForward(vision.getTy(VisionType.INTAKE), hasTarget, moveTo),
-      getStrafe(tx, hasTarget, moveTo),
+      getForward(vision.getTy(VisionType.INTAKE), hasTarget),
+      getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
       DriveMode.FIELD_RELATIVE);
   }
@@ -54,7 +47,7 @@ public class GamePieceLockedDriveCommand extends Command {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 
-  private double getForward(double ty, boolean hasTarget, boolean moveTo) {
+  private double getForward(double ty, boolean hasTarget) {
     if(hasTarget && moveTo) {
       return drivetrain.getTargetLockForward(ty, 0);
     }
@@ -63,7 +56,7 @@ public class GamePieceLockedDriveCommand extends Command {
     }
   }
 
-  private double getStrafe(double tx, boolean hasTarget, boolean moveTo) {
+  private double getStrafe(double tx, boolean hasTarget) {
     if(hasTarget && moveTo) {
       return 0;
     }
@@ -73,8 +66,10 @@ public class GamePieceLockedDriveCommand extends Command {
   }
 
   private double getRotation(double tx, boolean hasTarget) {
+    System.out.println("locking...");
     if(hasTarget) {
-      return drivetrain.getTargetLockRotation(tx, 0);
+      System.out.println(-drivetrain.getTargetLockRotation(tx, 0));
+      return -drivetrain.getTargetLockRotation(tx, 0);
     }
     else {
       return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxIntakingSpeed;

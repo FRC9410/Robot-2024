@@ -18,7 +18,6 @@ public class Vision extends SubsystemBase {
   public Vision() {
     shooterTable = NetworkTableInstance.getDefault().getTable(VisionConstants.kShooterTableName);
     shooterTable.getEntry("ledMode").setNumber(1);
-    shooterTable.getEntry("pipeline").setNumber(1);
     
     intakeTable = NetworkTableInstance.getDefault().getTable(VisionConstants.kIntakeTableName);
     intakeTable.getEntry("ledMode").setNumber(1);
@@ -50,12 +49,16 @@ public class Vision extends SubsystemBase {
     return getTable(type).getEntry("tv").getDouble(0) == 1;
   }
 
+  public void setPipeline(VisionType type, int pipeline) {
+    getTable(type).getEntry("pipeline").setNumber(pipeline);
+  }
+
   private NetworkTable getTable(VisionType type) {
     switch (type) {
       case SHOOTER:
         return shooterTable;
-      // case INTAKE:
-      //   return intakeTable;
+      case INTAKE:
+        return intakeTable;
       default:
         return null;
     }

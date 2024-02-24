@@ -44,23 +44,26 @@ public class RobotContainer {
         subsystems.getDrivetrain(),
         driverController));
 
+    // driverController.leftTrigger(0.5).whileTrue(
+    //   new IntakeNoteCommand(subsystems)
+    //     /*.alongWith(new AprilTagLockDriveCommand(
+    //       subsystems.getDrivetrain(),
+    //       subsystems.getVision(),
+    //       driverController,
+    //       driverController.a().getAsBoolean()))*/)
+    //     .onFalse(new ParallelRaceGroup(
+    //       new WaitCommand(2),
+    //       new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
+
     driverController.leftTrigger(0.5).whileTrue(
-      new IntakeNoteCommand(subsystems)
-        /*.alongWith(new AprilTagLockDriveCommand(
-          subsystems.getDrivetrain(),
-          subsystems.getVision(),
-          driverController,
-          driverController.a().getAsBoolean()))*/)
+      new GamePieceLockedDriveCommand(
+        subsystems.getDrivetrain(),
+        subsystems.getVision(),
+        driverController)
+        .alongWith(new IntakeNoteCommand(subsystems)))
         .onFalse(new ParallelRaceGroup(
           new WaitCommand(2),
           new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
-
-    // driverController.leftTrigger(0.5).whileTrue(
-    //   new GamePieceLockedDriveCommand(
-    //     subsystems.getDrivetrain(),
-    //     subsystems.getVision(),
-    //     driverController,
-    //     driverController.a().getAsBoolean()));
 
     driverController.rightTrigger(0.5).whileTrue(
       new AutoShootNoteCommand(subsystems)
