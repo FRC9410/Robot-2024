@@ -81,22 +81,11 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
       boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
       double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);
-      double shooterSetpoint = SmartDashboard.getNumber("SHOOTER SETPOINT:", 0.0);
-      double feederSetpoint = SmartDashboard.getNumber("FEEDER SETPOINT:", 0.0);
-      double shooterAngleSetpoint = SmartDashboard.getNumber("SHOOTER ANGLE SETPOINT:", 0.0);
-      double intakeWristAngle = SmartDashboard.getNumber("INTAKE SETPOINT", 0.0);
     if (driverController.getRightTriggerAxis() > 0.5
     && hasTarget && ta >= VisionConstants.kMaxShooterDistance
     && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4 ||
     robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
-    //   robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(ta);
-    //   robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(ta);
-    //   robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ta);
-    //   robotContainer.getSubsystems().getIntake().setWristAngleSetpoint(ta);
-      robotContainer.getSubsystems().getShooter().setShooterVelocitySetpoint(shooterSetpoint);
-      robotContainer.getSubsystems().getShooter().setFeederVelocitySetpoint(feederSetpoint);
-      robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(shooterAngleSetpoint);
-      robotContainer.getSubsystems().getIntake().setWristAngleSetpoint(intakeWristAngle);
+      robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ta);
     }
     
     if(hasTarget && ta >= VisionConstants.kMaxShooterDistance

@@ -15,19 +15,15 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
-import frc.robot.utils.LinearInterpolator;
 
 public class Intake extends SubsystemBase {
 
   private SparkPIDController pidController;
   private AbsoluteEncoder encoder;
-  
-  private LinearInterpolator wristAngleInterpolator;
 
   private TalonFX intake = new TalonFX(IntakeWrist.kIntakeCanId, RobotConstants.kCtreCanBusName);
   CANSparkMax primaryWrist = new CANSparkMax(IntakeWrist.kPrimaryWristCanId, MotorType.kBrushless);
@@ -43,10 +39,8 @@ public class Intake extends SubsystemBase {
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
 
   private double setpoint;
-  private double wristAngleSetpoint;
   
   public Intake() {
-    this.wristAngleInterpolator = new LinearInterpolator(IntakeWrist.wristAngles);
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.follow(primaryWrist, true);
@@ -69,7 +63,6 @@ public class Intake extends SubsystemBase {
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
 
     setpoint = IntakeWrist.kMinRotation;
-    wristAngleSetpoint = IntakeWrist.kMinRotation;
 
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     // SmartDashboard.putNumber("setpoint", setpoint);
@@ -90,15 +83,15 @@ public class Intake extends SubsystemBase {
     //   setpoint = newSetpoint;
     //   this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     // }
-    SmartDashboard.putNumber("INTAKE SETPOINT:", wristAngleSetpoint);
+    // SmartDashboard.putNumber("INTAKE SETPOINT:", wristAngleSetpoint);
   }
 
   public void setAngle(double angle) {
     this.pidController.setReference(angle, CANSparkMax.ControlType.kPosition);
   }
 
-  public void setAngle() {
-    this.pidController.setReference(wristAngleSetpoint, CANSparkMax.ControlType.kPosition);
+  public void setMinAngle() {
+    this.pidController.setReference(IntakeWrist.kMinRotation, CANSparkMax.ControlType.kPosition);
   }
   
 
@@ -151,12 +144,6 @@ public class Intake extends SubsystemBase {
     configs.Voltage.PeakReverseVoltage = -12;
 
     motor.getConfigurator().apply(configs);
-  }
-
-  public void setWristAngleSetpoint(double ty){
-    wristAngleSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= IntakeWrist.kMinRotation
-    && wristAngleInterpolator.getInterpolatedValue(ty) <= IntakeWrist.kMaxRotation ?
-    wristAngleInterpolator.getInterpolatedValue(ty) : IntakeWrist.kMinRotation;
   }
 
   public void setEnableIdleMode() {

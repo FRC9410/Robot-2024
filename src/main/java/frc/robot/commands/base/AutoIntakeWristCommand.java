@@ -23,7 +23,7 @@ public class AutoIntakeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.intake.setAngle();
+    this.intake.setMinAngle();
   }
 
   // Called once the command ends or is interrupted.

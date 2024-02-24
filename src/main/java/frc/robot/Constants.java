@@ -137,7 +137,7 @@ public final class Constants
     public static final double kDrivingMinOutput = -1;
     public static final double kDrivingMaxOutput = 1;
 
-    public static final double kTurningP = 1;
+    public static final double kTurningP = 0.8;
     public static final double kTurningI = 0;
     public static final double kTurningD = 0;
     public static final double kTurningFF = 0;
@@ -198,7 +198,7 @@ public final class Constants
     public static double kMinOutput = -1;
     public static double kOffset = 0.7;
     public static double kMaxRotation = 0.64;
-    public static double kMinRotation = 0.12;
+    public static double kMinRotation = 0.11;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
@@ -206,20 +206,6 @@ public final class Constants
     public static final double maxAcc = 25000;
     public static final double maxVel = 11000;
     public static final double allowedError = 0;
-
-    public static final double[][] wristAngles = {
-      {0.3, .11},
-      {0.34, .11},
-      {0.37, .11},
-      {0.413, .11},
-      {0.467, .11},
-      {0.536, .1125},
-      {0.632, .115},
-      {0.741, .12},
-      {0.82, .12},
-      {0.939, .12},
-      {1.027, .12}
-    };
 
     //copy the above array and subtract 20.7 from every value
   }
@@ -267,34 +253,8 @@ public final class Constants
   {
     public static double kP = 0.56;
     public static double kFF = 4.75;
-
-    public static final double[][] shooterSpeeds = {
-      {0.3, 100},
-      {0.34, 95},
-      {0.37, 95},
-      {0.413, 90},
-      {0.467, 80},
-      {0.536, 85},
-      {0.632, 80},
-      {0.741, 80},
-      {0.82, 80},
-      {0.939, 80},
-      {1.027, 80}
-    };
-
-    public static final double[][] feederSpeeds = {
-      {0.3, -45},
-      {0.34, -45},
-      {0.37, -45},
-      {0.413, -45},
-      {0.467, -40},
-      {0.536, -40},
-      {0.632, -40},
-      {0.741, -40},
-      {0.82, -40},
-      {0.939, -40},
-      {1.027, -40}
-    };
+    public static double kSpeakerShooterSpeed = 90;
+    public static double kSpeakerFeederSpeed = -45;
   }
 
   public static final class ElevatorConstants
