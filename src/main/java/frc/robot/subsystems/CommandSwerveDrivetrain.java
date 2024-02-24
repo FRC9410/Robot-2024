@@ -9,6 +9,10 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.TunerConstants;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -31,6 +36,7 @@ import java.util.function.Supplier;
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.ApplyChassisSpeeds AutoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     public final PIDController forwardPidController =
         new PIDController(DriveConstants.forwardKP, DriveConstants.forwardkI, DriveConstants.forwardkD);
@@ -177,8 +183,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public ChassisSpeeds getChassisSpeeds() {
-    ChassisSpeeds chassisSpeeds = getKinematics().toChassisSpeeds(getModuleStates());
-    return chassisSpeeds;
+        ChassisSpeeds chassisSpeeds = getKinematics().toChassisSpeeds(getModuleStates());
+        return chassisSpeeds;
     }
 
     public double getTargetLockRotation(double tx, double offset) {
@@ -217,6 +223,26 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double strafe = -strafePidController.calculate(0, tx + offset);
         double output = strafe + Math.copySign(DriveConstants.targetLockKFF, strafe);
         return output;
+    }
+
+    private void configurePathPlanner() {
+        double driveBaseRadius = 0;
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        AutoBuilder.configureHolonomic(
+            ()->this.getState().Pose, // Supplier of current robot pose
+            this::seedFieldRelative,  // Consumer for seeding pose against auto
+            this::getChassisSpeeds,
+            (speeds)->this.setControl(AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
+            new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
+                                            new PIDConstants(10, 0, 0),
+                                            TunerConstants.kSpeedAt12VoltsMps,
+                                            driveBaseRadius,
+                                            new ReplanningConfig()),
+            ()->false, // Change this if the path needs to be flipped on red vs blue
+            this); // Subsystem for requirements
     }
 
     public TalonFX[] getMotors() {

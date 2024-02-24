@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,10 +17,9 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Vision.VisionType;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   private RobotContainer robotContainer;
-  private Tuning tuning;
   NetworkTable table;
   NetworkTableEntry tx;
   NetworkTableEntry ty;
@@ -29,7 +30,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     driverController = robotContainer.getDriverController();
-    // tuning = new Tuning(robotContainer.getSubsystems());
   }
 
   @Override
@@ -38,6 +38,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("ty", robotContainer.getSubsystems().getVision().getTy(VisionType.SHOOTER));
     SmartDashboard.putNumber("tx", robotContainer.getSubsystems().getVision().getTx(VisionType.SHOOTER));
     SmartDashboard.putNumber("ta", robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER));
+      var lastResult = LimelightHelpers.getLatestResults("limelight-back").targetingResults;
+
+      Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
+
+      if (lastResult.valid) {
+        robotContainer.getSubsystems().getDrivetrain().addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+      }
   } 
 
   @Override
@@ -56,10 +63,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    autonomousCommand = robotContainer.getAutonomousCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
   }
 
@@ -72,8 +79,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
     // robotContainer.getSubsystems().getMusic().playSong("jackSparrow");
   }
@@ -110,7 +117,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-    // tuning.updateTuning(robotContainer.getSubsystems());
 
   }
 

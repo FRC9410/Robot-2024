@@ -30,7 +30,9 @@ public class Shooter extends SubsystemBase {
 
   private LinearInterpolator wristAngleInterpolator;
 
-  private static final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private static final VelocityVoltage primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private static final VelocityVoltage secondaryWheelVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private static final VelocityVoltage feederVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
   private static final VelocityVoltage voltageVelocityFoc = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
   private static final NeutralOut brake = new NeutralOut();
@@ -114,18 +116,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity(double velocity) {
-    // this.primaryWheel.setControl(voltageVelocity.withVelocity(-velocity).withFeedForward(-ShooterConstants.kFF)); //-100
-    // this.secondaryWheel.setControl(voltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
-    primaryWheel.set(-100);
-    secondaryWheel.set(100);
+    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-velocity).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(velocity-5).withFeedForward(ShooterConstants.kFF)); //95
+    // primaryWheel.set(-100);
+    // secondaryWheel.set(100);
   }
 
   public void setShooterVelocity() {
-    // this.primaryWheel.setControl(voltageVelocity.withVelocity(-90).withFeedForward(-4.5)); //-100
-    // this.secondaryWheel.setControl(voltageVelocity.withVelocity(85).withFeedForward(4.5)); //95
+    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-ShooterConstants.kSpeakerShooterSpeed).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(ShooterConstants.kSpeakerShooterSpeed -5).withFeedForward(ShooterConstants.kFF)); //95
     
-    primaryWheel.set(-100);
-    secondaryWheel.set(100);
+    // primaryWheel.set(-100);
+    // secondaryWheel.set(100);
   }
 
   public void shooterOff() {
@@ -147,7 +149,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void feedOn(double velocity, double feedforward) {
-    this.feeder.setControl(voltageVelocity.withVelocity(velocity));
+    this.feeder.setControl(feederVoltageVelocity.withVelocity(velocity));
   }
 
   public void feedOff() {
@@ -155,7 +157,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setFeederVelocity(double velocity) {
-    this.feeder.setControl(voltageVelocityFoc.withVelocity(velocity));
+    this.feeder.setControl(feederVoltageVelocity.withVelocity(velocity));
 
   }
 

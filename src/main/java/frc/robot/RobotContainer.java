@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -27,10 +32,13 @@ public class RobotContainer {
   private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems();
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
+  public String allianceColor;
+  private Command runAuto = getAutoPath("Test1");
 
   public RobotContainer() {
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
-
+    setAllianceColor();
+    registerNamedCommands();
     configurePilotBindings();
     configureCopilotBindings();
     subsystems.getLeds().setFadeAnimtation(0, 255, 255);
@@ -46,17 +54,6 @@ public class RobotContainer {
       new DefaultDriveCommand(
         subsystems.getDrivetrain(),
         driverController));
-
-    // driverController.leftTrigger(0.5).whileTrue(
-    //   new IntakeNoteCommand(subsystems)
-    //     /*.alongWith(new AprilTagLockDriveCommand(
-    //       subsystems.getDrivetrain(),
-    //       subsystems.getVision(),
-    //       driverController,
-    //       driverController.a().getAsBoolean()))*/)
-    //     .onFalse(new ParallelRaceGroup(
-    //       new WaitCommand(2),
-    //       new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
 
     driverController.leftTrigger(0.5).whileTrue(
       new GamePieceLockedDriveCommand(
@@ -74,8 +71,6 @@ public class RobotContainer {
           subsystems.getDrivetrain(),
           subsystems.getVision(),
           driverController)));
-
-
     
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
   }
@@ -92,7 +87,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    /* First put the drivetrain into auto run mode, then run the auto */
+    return runAuto;
   }
 
   public void setEnabledIdleMode() {
@@ -108,5 +104,19 @@ public class RobotContainer {
 
   public CommandXboxController getDriverController() {
     return driverController;
+  }
+
+  public Command getAutoPath(String pathName) {
+      return new PathPlannerAuto(pathName);
+  }
+
+  public void registerNamedCommands() {
+    NamedCommands.registerCommand("AutoShootNoteCommand", new AutoShootNoteCommand(subsystems));
+    NamedCommands.registerCommand("IntakeNoteCommand", new IntakeNoteCommand(subsystems));
+  }
+
+  public void setAllianceColor() {
+    DriverStation.getAlliance().ifPresent((alliance) ->
+      allianceColor = (alliance == Alliance.Red ? "red" : "blue"));
   }
 }

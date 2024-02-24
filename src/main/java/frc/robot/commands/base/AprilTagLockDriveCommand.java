@@ -33,7 +33,7 @@ public class AprilTagLockDriveCommand extends Command {
   @Override
   public void initialize() {
     // setPidControllers(vision.getTagId(VisionType.SHOOTER));
-    vision.setPipeline(VisionType.SHOOTER, 1);
+    vision.setPipeline(VisionType.SHOOTER, 0);
   }
 
   @Override
@@ -65,7 +65,7 @@ public class AprilTagLockDriveCommand extends Command {
 
   private double getForward(double ta, boolean hasTarget, boolean moveTo) {
     if(hasTarget && moveTo) {
-      return drivetrain.getTargetLockForward(0.7 - ta, 0);
+      return drivetrain.getTargetLockForward(getForwardSetpoint(vision.getTagId(VisionType.SHOOTER)) - ta, 0);
     }
     else {
       return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
@@ -82,17 +82,66 @@ public class AprilTagLockDriveCommand extends Command {
   }
 
   private double getRotation(double tx, boolean hasTarget) {
-    double poseRotation = drivetrain.getPose().getRotation().getDegrees();
-    double poseError = poseRotation < 180 ? poseRotation + 180 : poseRotation - 180;
-    return -drivetrain.getRotationLockRotation(poseError, 0);
+    double currentPoseRotation = drivetrain.getPose().getRotation().getDegrees();
+    double setpoint = hasTarget ? getRotationSetpoint(vision.getTagId(VisionType.SHOOTER)) : 0;
+    double distance = setpoint - currentPoseRotation;
+    double error = distance < 180 && distance > -180 ? distance : distance > 180 ? distance - 360 : distance + 360;
+
+    return -drivetrain.getRotationLockRotation(error, 0);
   }
 
-  // TODO: put cases for different tag ids
+  // measured in ta
   private double getForwardSetpoint(int tagId) {
-    return 0.0;
+    switch(tagId) {
+      case 4: // red speaker
+        return 0.0;
+      case 5: // red amp
+        return 0.0;
+      case 6: // blue amp
+        return 0.0;
+      case 7: // blue speaker
+        return 0.0;
+      case 11: // red stage left
+        return 0.0;
+      case 12: // red stage right
+        return 0.0;
+      case 13: // red stage back
+        return 0.0;
+      case 14: // blue stage back
+        return 0.0;
+      case 15: // blue stage left
+        return 0.0;
+      case 16: // blue stage right
+        return 0.0;
+      default:
+        return 0.0;
+    }
   }
 
   private double getRotationSetpoint(int tagId) {
-    return 0.0;
+    switch(tagId) {
+      case 4: // red speaker
+        return 0.0;
+      case 5: // red amp
+        return 270.0;
+      case 6: // blue amp
+        return 90.0;
+      case 7: // blue speaker
+        return 0.0;
+      case 11: // red stage left
+        return 240.0;
+      case 12: // red stage right
+        return 120.0;
+      case 13: // red stage back
+        return 0.0;
+      case 14: // blue stage back
+        return 0.0;
+      case 15: // blue stage left
+        return 240.0;
+      case 16: // blue stage right
+        return 120.0;
+      default:
+        return 0.0;
+    }
   }
 }
