@@ -39,7 +39,7 @@ public class ShootTrapCommand extends SequentialCommandGroup {
       new IntakeCommand(subsystems.getIntake(), 80, -8, 15),
       new ShootCommand(subsystems.getShooter(), 95),
       new VoltageFeedCommand(subsystems.getShooter(), -55),
-      new IntakeWristCommand(subsystems.getIntake(), 0.12)
+      new IntakeWristCommand(subsystems.getIntake(), 0.11)
     );
   }
 }

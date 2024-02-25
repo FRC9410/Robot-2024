@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +34,7 @@ public class RobotContainer {
   private Subsystems subsystems = new Subsystems();
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
   public String allianceColor;
-  private Command runAuto = getAutoPath("Test1");
+  // private Command runAuto = getAutoPath("Test1");
 
   public RobotContainer() {
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
@@ -86,10 +87,10 @@ public class RobotContainer {
     return this.subsystems;
   }
 
-  public Command getAutonomousCommand() {
-    /* First put the drivetrain into auto run mode, then run the auto */
-    return runAuto;
-  }
+  // public Command getAutonomousCommand() {
+  //   /* First put the drivetrain into auto run mode, then run the auto */
+  //   return runAuto;
+  // }
 
   public void setEnabledIdleMode() {
     
@@ -106,9 +107,9 @@ public class RobotContainer {
     return driverController;
   }
 
-  public Command getAutoPath(String pathName) {
-      return new PathPlannerAuto(pathName);
-  }
+  // public Command getAutoPath(String pathName) {
+  //     return new PathPlannerAuto(pathName);
+  // }
 
   public void registerNamedCommands() {
     NamedCommands.registerCommand("AutoShootNoteCommand", new AutoShootNoteCommand(subsystems));

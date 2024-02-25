@@ -47,9 +47,9 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (this.speed < 0 && this.timer.hasElapsed(1) && Math.abs(this.intake.getVelocity()) < this.minCurrentDraw) {
-      return true;
-    }
+    // if (this.speed < 0 && this.timer.hasElapsed(1) && Math.abs(this.intake.getVelocity()) < this.minCurrentDraw) {
+    //   return true;
+    // }
     return false;
   }
 }

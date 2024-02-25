@@ -6,6 +6,7 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
@@ -33,7 +34,7 @@ public class AprilTagLockDriveCommand extends Command {
   @Override
   public void initialize() {
     // setPidControllers(vision.getTagId(VisionType.SHOOTER));
-    vision.setPipeline(VisionType.SHOOTER, 0);
+    vision.setPipeline(VisionType.SHOOTER, 1);
   }
 
   @Override
@@ -55,7 +56,7 @@ public class AprilTagLockDriveCommand extends Command {
       getForward(vision.getTa(VisionType.SHOOTER), hasTarget, moveTo),
       getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
-      DriveMode.FIELD_RELATIVE);
+      hasTarget ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
   }
 
   @Override
@@ -74,7 +75,7 @@ public class AprilTagLockDriveCommand extends Command {
 
   private double getStrafe(double tx, boolean hasTarget) {
     if(hasTarget) {
-      return -drivetrain.getTargetLockStrafe(tx, 0);
+      return drivetrain.getTargetLockStrafe(tx, 0);
     }
     else {
       return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
@@ -82,12 +83,18 @@ public class AprilTagLockDriveCommand extends Command {
   }
 
   private double getRotation(double tx, boolean hasTarget) {
+    if(!hasTarget) {
+      return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxShootingSpeed;
+    }
     double currentPoseRotation = drivetrain.getPose().getRotation().getDegrees();
     double setpoint = hasTarget ? getRotationSetpoint(vision.getTagId(VisionType.SHOOTER)) : 0;
     double distance = setpoint - currentPoseRotation;
+    SmartDashboard.putNumber("tagId", vision.getTagId(VisionType.SHOOTER));
+    SmartDashboard.putNumber("driving distance", distance);
+    SmartDashboard.putNumber("setpoint", setpoint);
     double error = distance < 180 && distance > -180 ? distance : distance > 180 ? distance - 360 : distance + 360;
 
-    return -drivetrain.getRotationLockRotation(error, 0);
+    return drivetrain.getRotationLockRotation(error, 0);
   }
 
   // measured in ta
@@ -137,7 +144,7 @@ public class AprilTagLockDriveCommand extends Command {
       case 14: // blue stage back
         return 0.0;
       case 15: // blue stage left
-        return 240.0;
+        return 120.0;
       case 16: // blue stage right
         return 120.0;
       default:

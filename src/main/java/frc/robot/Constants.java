@@ -86,7 +86,7 @@ public final class Constants
     public static final double forwardkI = 0.0;
     public static final double forwardkD = 0.0;
 
-    public static final double strafeKP = 0.11;
+    public static final double strafeKP = 0.06;
     public static final double strafekI = 0.0;
     public static final double strafekD = 0.0;
     
@@ -97,7 +97,7 @@ public final class Constants
     public static final double targetLockKFF = 0.0;
     public static final double targetLockKTolerance = 0.25;
 
-    public static final List<Integer> moveToTags = List.of(4, 5, 7);
+    public static final List<Integer> moveToTags = List.of(4, 5, 7, 15);
   }
 
   public static final class ModuleConstants {
@@ -248,7 +248,7 @@ public final class Constants
   {
     public static double kP = 0.56;
     public static double kFF = 4.75;
-    public static double kSpeakerShooterSpeed = 70;
+    public static double kSpeakerShooterSpeed = 0;
     public static double kSpeakerFeederSpeed = -45;
   }
 

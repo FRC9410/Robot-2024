@@ -30,8 +30,8 @@ public class Shooter extends SubsystemBase {
 
   private LinearInterpolator wristAngleInterpolator;
 
-  private static final VelocityVoltage primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
-  private static final VelocityVoltage secondaryWheelVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
+  private static final VelocityVoltage secondaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+  private static final VelocityVoltage primaryWheelVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private static final VelocityVoltage feederVoltageVelocity = new VelocityVoltage(0, 0, false, 0, 0, false, false, false);
   private static final VelocityVoltage voltageVelocityFoc = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
   private static final VelocityTorqueCurrentFOC torqueVelocity = new VelocityTorqueCurrentFOC(86, 86, 0, 0, false, false, false);
@@ -89,8 +89,8 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
 
 
-    // setShooterConfigs(primaryWheel);
-    // setShooterConfigs(secondaryWheel);
+    setShooterConfigs(primaryWheel);
+    setShooterConfigs(secondaryWheel);
     setFeederConfigs(feeder);
 
   }
@@ -111,7 +111,11 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Primary Wheel Actual", primaryWheel.getRotorVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Secondary Wheel Actual", secondaryWheel.getRotorVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Primary Wheel Current", primaryWheel.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Primary Wheel Voltage", primaryWheel.getSupplyVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Secondary Wheel Current", secondaryWheel.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Secondary Wheel Voltage", secondaryWheel.getSupplyVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Secondary Wheel Setpoint", primaryWheelVoltageVelocity.Velocity);
+    SmartDashboard.putNumber("Primary Wheel Setpoint", secondaryWheelVoltageVelocity.Velocity);
     // System.out.println(primaryWheel.getVelocity());
   }
 
@@ -123,8 +127,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity() {
-    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-ShooterConstants.kSpeakerShooterSpeed).withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(ShooterConstants.kSpeakerShooterSpeed -5).withFeedForward(ShooterConstants.kFF)); //95
+    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-90/*-ShooterConstants.kSpeakerShooterSpeed*/)); //.withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(85/*ShooterConstants.kSpeakerShooterSpeed -5*/)); //.withFeedForward(ShooterConstants.kFF)); //95
     
     // primaryWheel.set(-100);
     // secondaryWheel.set(100);
@@ -199,8 +203,6 @@ public class Shooter extends SubsystemBase {
     // Peak output of 8 volts
     configs.Voltage.PeakForwardVoltage = 16;
     configs.Voltage.PeakReverseVoltage = -16;
-    configs.CurrentLimits.SupplyCurrentLimitEnable = true;
-    configs.CurrentLimits.SupplyCurrentLimit = 40;
 
     motor.getConfigurator().apply(configs);
   }
@@ -229,7 +231,7 @@ public class Shooter extends SubsystemBase {
     return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > 80
     && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > 80
     && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(ShooterConstants.kSpeakerFeederSpeed) - 5
-    && encoder.getPosition() > wristSetpoint - 0.3
+    && encoder.getPosition() > wristSetpoint - 0.4
     && encoder.getPosition() < wristSetpoint - 0.15;
   }
   public void setEnableIdleMode() {

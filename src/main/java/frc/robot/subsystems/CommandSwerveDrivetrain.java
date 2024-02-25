@@ -69,11 +69,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double OdometryUpdateFrequency,
         SwerveModuleConstants... modules) {
     super(driveTrainConstants, OdometryUpdateFrequency, modules);
+    // configurePathPlanner();
     }
 
     public CommandSwerveDrivetrain(
         SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
     this(driveTrainConstants, 0, modules);
+    // configurePathPlanner();
     }
 
     public void applyRequest(Supplier<SwerveRequest> requestSupplier) {
