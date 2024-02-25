@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
     this.wristAngleInterpolator = new LinearInterpolator(ShooterWrist.wristAngles);
     this.primaryWrist.restoreFactoryDefaults();
     this.secondaryWrist.restoreFactoryDefaults();
-    this.secondaryWrist.setInverted(true);
+    this.secondaryWrist.follow(primaryWrist, true);
     this.primaryWrist.setIdleMode(IdleMode.kBrake);
     this.secondaryWrist.setIdleMode(IdleMode.kBrake);
 
@@ -80,8 +80,8 @@ public class Shooter extends SubsystemBase {
     this.pidController.setFF(ShooterWrist.kFF);
     this.pidController.setOutputRange(ShooterWrist.kMinOutput, ShooterWrist.kMaxOutput);
     
-    pidController.setSmartMotionMaxAccel(1/60, 0);
-    pidController.setSmartMotionMaxVelocity(ShooterWrist.kMaxVel, 0);
+    pidController.setSmartMotionMaxAccel(6000, 0);
+    pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
     pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
     
     this.setpoint = ShooterWrist.kMinRotation;
@@ -127,8 +127,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterVelocity() {
-    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-90/*-ShooterConstants.kSpeakerShooterSpeed*/)); //.withFeedForward(-ShooterConstants.kFF)); //-100
-    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(85/*ShooterConstants.kSpeakerShooterSpeed -5*/)); //.withFeedForward(ShooterConstants.kFF)); //95
+    this.primaryWheel.setControl(primaryWheelVoltageVelocity.withVelocity(-90/*-ShooterConstants.kSpeakerShooterSpeed*/).withFeedForward(-ShooterConstants.kFF)); //-100
+    this.secondaryWheel.setControl(secondaryWheelVoltageVelocity.withVelocity(85/*ShooterConstants.kSpeakerShooterSpeed -5*/).withFeedForward(ShooterConstants.kFF)); //95
     
     // primaryWheel.set(-100);
     // secondaryWheel.set(100);
@@ -222,17 +222,21 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setWristAngleSetpoint(double ty){
-    wristSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= ShooterWrist.kMinRotation
+    double newWristSetpoint = wristAngleInterpolator.getInterpolatedValue(ty) >= ShooterWrist.kMinRotation
     && wristAngleInterpolator.getInterpolatedValue(ty) <= ShooterWrist.kMaxRotation ?
     wristAngleInterpolator.getInterpolatedValue(ty) : 0.0;
+
+    if(Math.abs(newWristSetpoint - setpoint) > 0.15 && newWristSetpoint != 0.0) {
+      wristSetpoint = newWristSetpoint;
+    }
   }
 
   public boolean isShooterReady() {
-    return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > 80
-    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > 80
+    return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > 70
+    && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > 70
     && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(ShooterConstants.kSpeakerFeederSpeed) - 5
-    && encoder.getPosition() > wristSetpoint - 0.4
-    && encoder.getPosition() < wristSetpoint - 0.15;
+    && encoder.getPosition() > (wristSetpoint - 0.2)
+    && encoder.getPosition() < (wristSetpoint);
   }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);
@@ -240,7 +244,7 @@ public class Shooter extends SubsystemBase {
 
     secondaryWheel.setNeutralMode(NeutralModeValue.Coast);
     primaryWrist.setIdleMode(IdleMode.kBrake);
-    secondaryWrist.setIdleMode(IdleMode.kCoast);
+    secondaryWrist.setIdleMode(IdleMode.kBrake);
 
   }
 
@@ -249,6 +253,6 @@ public class Shooter extends SubsystemBase {
     primaryWheel.setNeutralMode(NeutralModeValue.Coast);
     secondaryWheel.setNeutralMode(NeutralModeValue.Coast);
     primaryWrist.setIdleMode(IdleMode.kCoast);
-    secondaryWrist.setIdleMode(IdleMode.kBrake);
+    secondaryWrist.setIdleMode(IdleMode.kCoast);
   }
 }

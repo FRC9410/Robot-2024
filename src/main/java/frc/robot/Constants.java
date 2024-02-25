@@ -86,7 +86,7 @@ public final class Constants
     public static final double forwardkI = 0.0;
     public static final double forwardkD = 0.0;
 
-    public static final double strafeKP = 0.06;
+    public static final double strafeKP = 0.08;
     public static final double strafekI = 0.0;
     public static final double strafekD = 0.0;
     
@@ -189,7 +189,7 @@ public final class Constants
     public static final double kGoundAngle = 100;
     public static final double kHomeAngle = 0;
 
-    public static double kP = 5; 
+    public static double kP = 3; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
@@ -228,7 +228,6 @@ public final class Constants
     public static double kMinOutput = -0.5;
     public static double kMinRotation = 0.0;
     public static double kMaxRotation = 16.0;
-    public static double kMaxVel = 1/60;
 
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
@@ -236,10 +235,10 @@ public final class Constants
 
     public static final double [][] wristAngles = {
       {1.13, 0.3},
-      {0.77, 0.5}, //1.1
-      {0.59, 1.1}, //1.9
-      {0.44, 1.8}, //2.3
-      {0.4, 2.4},  //2.5
+      {0.77, 0.6}, //1.1
+      {0.59, 1.2}, //1.9
+      {0.44, 1.9}, //2.3
+      {0.4, 2.3},  //2.5
       {0.34, 2.6}
     };
   }

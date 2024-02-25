@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     var lastResult = LimelightHelpers.getLatestResults("limelight-back").targetingResults;
 
     Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
-    llPose.rotateBy(llPose.getRotation().getDegrees() > 180 ? Rotation2d.fromDegrees(-180) : Rotation2d.fromDegrees(180));
+    // llPose.rotateBy(llPose.getRotation().getDegrees() > 180 ? Rotation2d.fromDegrees(-180) : Rotation2d.fromDegrees(180));
 
     if (lastResult.valid) {
       robotContainer.getSubsystems().getDrivetrain().addVisionMeasurement(llPose, Timer.getFPGATimestamp());

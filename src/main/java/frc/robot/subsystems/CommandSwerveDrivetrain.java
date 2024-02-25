@@ -40,7 +40,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public final PIDController forwardPidController =
         new PIDController(DriveConstants.forwardKP, DriveConstants.forwardkI, DriveConstants.forwardkD);
-
         
     public final PIDController strafePidController =
         new PIDController(DriveConstants.strafeKP, DriveConstants.strafekI, DriveConstants.strafekD);
@@ -144,7 +143,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void zeroAll() {
         zeroGyro();
-        resetPose();
     }
 
     public void zeroGyro() {
