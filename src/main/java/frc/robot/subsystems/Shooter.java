@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterWrist;
+import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.Constants.IntakeWrist;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -80,9 +81,9 @@ public class Shooter extends SubsystemBase {
     this.pidController.setFF(ShooterWrist.kFF);
     this.pidController.setOutputRange(ShooterWrist.kMinOutput, ShooterWrist.kMaxOutput);
     
-    pidController.setSmartMotionMaxAccel(6000, 0);
-    pidController.setSmartMotionMaxVelocity(IntakeWrist.maxVel, 0);
-    pidController.setSmartMotionAllowedClosedLoopError(IntakeWrist.allowedError, 0);
+    pidController.setSmartMotionMaxAccel(ShooterWrist.maxAcc, 0);
+    pidController.setSmartMotionMaxVelocity(ShooterWrist.maxVel, 0);
+    pidController.setSmartMotionAllowedClosedLoopError(ShooterWrist.allowedError, 0);
     
     this.setpoint = ShooterWrist.kMinRotation;
     this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);

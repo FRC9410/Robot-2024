@@ -9,7 +9,7 @@ import frc.robot.TunerConstants;
 /** Add your docs here. */
 public class Subsystems {
     private CommandSwerveDrivetrain drivetrain;
-    // private Elevator elevator;
+    private Elevator elevator;
     private Shooter shooter;
     private Intake intake;
     private Leds leds;
@@ -24,7 +24,7 @@ public class Subsystems {
         this.leds = new Leds();
         this.music = new Music(this.intake, this.shooter, this.drivetrain);
         this.vision = new Vision();
-        // elevator = new Elevator();
+        this.elevator = new Elevator();
     }
 
     public CommandSwerveDrivetrain getDrivetrain() {
@@ -39,9 +39,9 @@ public class Subsystems {
         return shooter;
     }
 
-    // public Elevator getElevator() {
-    //     return elevator;
-    // }
+    public Elevator getElevator() {
+        return elevator;
+    }
 
     public Leds getLeds() {
         return leds;

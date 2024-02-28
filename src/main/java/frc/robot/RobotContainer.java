@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.GamePieceLockedDriveCommand;
@@ -80,6 +81,15 @@ public class RobotContainer {
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
     copilotController.y().onTrue(new ScoreAmpCommand(subsystems));
     copilotController.b().whileTrue(new ShootTrapCommand(subsystems));
+
+    
+    /* Bindings for drivetrain characterization */
+    /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
+    /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
+    // copilotController.back().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kForward));
+    // copilotController.back().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdDynamic(Direction.kReverse));
+    // copilotController.start().and(copilotController.y()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kForward));
+    // copilotController.start().and(copilotController.x()).whileTrue(subsystems.getDrivetrain().sysIdQuasistatic(Direction.kReverse));
   }
         
 

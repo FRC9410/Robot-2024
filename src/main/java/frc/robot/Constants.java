@@ -229,6 +229,9 @@ public final class Constants
     public static double kMinRotation = 0.0;
     public static double kMaxRotation = 16.0;
 
+    public static final double maxAcc = 25000;
+    public static final double maxVel = 11000;
+    public static final double allowedError = 0;
 
     public static final SparkAbsoluteEncoder.Type kAbsEncType = SparkAbsoluteEncoder.Type.kDutyCycle;
     public static final int kCPR = 8192;
@@ -253,8 +256,8 @@ public final class Constants
 
   public static final class ElevatorConstants
   {
-    public static final int kPrimaryElevatorCanId = 31;
-    public static final int kSecondaryElevatorCanId = 32;
+    public static final int kPrimaryElevatorCanId = 41;
+    public static final int kSecondaryElevatorCanId = 42;
     public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
@@ -262,6 +265,13 @@ public final class Constants
     public static double kFF = 0; 
     public static double kMaxOutput = 0.2; 
     public static double kMinOutput = -0.2;
+    public static double kOffset = 0.7;
+    public static double kMaxRotation = 5;
+    public static double kMinRotation = 0.1;
+
+    public static final double maxAcc = 25000;
+    public static final double maxVel = 11000;
+    public static final double allowedError = 0;
 
     public static final int kCPR = 8192;
     public static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;

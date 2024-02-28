@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,7 +24,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.TunerConstants;
@@ -49,6 +54,46 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private final SwerveRequest.ApplyChassisSpeeds chassisSpeedRequest =
         new SwerveRequest.ApplyChassisSpeeds();
+
+    private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
+    private final SwerveRequest.SysIdSwerveRotation RotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+    private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
+    
+    /* Use one of these sysidroutines for your particular test */
+    private SysIdRoutine SysIdRoutineTranslation = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null,
+                    Volts.of(4),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (volts) -> setControl(TranslationCharacterization.withVolts(volts)),
+                    null,
+                    this));
+
+    private final SysIdRoutine SysIdRoutineRotation = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null,
+                    Volts.of(4),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (volts) -> setControl(RotationCharacterization.withVolts(volts)),
+                    null,
+                    this));
+    private final SysIdRoutine SysIdRoutineSteer = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                    null,
+                    Volts.of(7),
+                    null,
+                    (state) -> SignalLogger.writeString("state", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    (volts) -> setControl(SteerCharacterization.withVolts(volts)),
+                    null,
+                    this));
+
+    /* Change this to the sysid routine you want to test */
+    private final SysIdRoutine RoutineToApply = SysIdRoutineRotation;
 
     // Comment out below requests for CUBE_BOT
     private final SwerveRequest.FieldCentric fieldRelative =
@@ -226,7 +271,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void configurePathPlanner() {
-        double driveBaseRadius = 0;
+        double driveBaseRadius = 0.41309;
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
@@ -236,8 +281,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this::seedFieldRelative,  // Consumer for seeding pose against auto
             this::getChassisSpeeds,
             (speeds)->this.setControl(AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-            new HolonomicPathFollowerConfig(new PIDConstants(10, 0, 0),
-                                            new PIDConstants(10, 0, 0),
+            new HolonomicPathFollowerConfig(new PIDConstants(0.046, 0, 0.00075),
+                                            new PIDConstants(0.0463, 0, 0.00085),
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
                                             new ReplanningConfig()),
@@ -275,5 +320,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public enum DriveMode {
     ROBOT_RELATIVE, FIELD_RELATIVE
+    }
+
+    /*
+     * Both the sysid commands are specific to one particular sysid routine, change
+     * which one you're trying to characterize
+     */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return RoutineToApply.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return RoutineToApply.dynamic(direction);
     }
 }
