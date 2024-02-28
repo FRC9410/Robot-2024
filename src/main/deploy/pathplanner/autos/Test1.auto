@@ -12,28 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "AutoShootNoteCommand"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ToNote1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNoteCommand"
-                }
-              }
-            ]
+            "pathName": "Test"
           }
         }
       ]
