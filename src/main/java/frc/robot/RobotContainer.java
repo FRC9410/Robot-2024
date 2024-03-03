@@ -19,13 +19,18 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.base.DefaultDriveCommand;
 import frc.robot.commands.base.GamePieceLockedDriveCommand;
+import frc.robot.commands.base.SpeakerLockDriveCommand;
+import frc.robot.commands.base.AmpPositionLockDriveCommand;
 import frc.robot.commands.base.AprilTagLockDriveCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.AutoShootNoteCommand;
+import frc.robot.commands.group.CenterNoteCommand;
+import frc.robot.commands.group.EjectNoteCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.commands.group.ShootTrapCommand;
+import frc.robot.commands.group.TimedShootNoteCommand;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
@@ -35,15 +40,17 @@ public class RobotContainer {
   private Subsystems subsystems = new Subsystems();
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
   public String allianceColor;
-  // private Command runAuto = getAutoPath("Test1");
+  private Command runAuto = getAutoPath("Test1");
 
   public RobotContainer() {
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
     setAllianceColor();
+    allianceColor = "blue";
     registerNamedCommands();
     configurePilotBindings();
     configureCopilotBindings();
     subsystems.getLeds().setFadeAnimtation(0, 255, 255);
+    runAuto = getAutoPath("Test2");
   }
 
   private void configurePilotBindings() {
@@ -69,18 +76,24 @@ public class RobotContainer {
 
     driverController.rightTrigger(0.5).whileTrue(
       new AutoShootNoteCommand(subsystems)
-        .alongWith(new AprilTagLockDriveCommand(
+        .alongWith(new SpeakerLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
-          driverController)));
+          driverController,
+          allianceColor)));
     
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
+
+    driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain(), allianceColor));
   }
 
   private void configureCopilotBindings() {
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
     copilotController.y().onTrue(new ScoreAmpCommand(subsystems));
-    copilotController.b().whileTrue(new ShootTrapCommand(subsystems));
+    copilotController.b().onTrue(new EjectNoteCommand(subsystems));
+    copilotController.a().onTrue(new CenterNoteCommand(subsystems));
+    copilotController.rightTrigger(0.5).whileTrue(new ShootTrapCommand(subsystems));
+    copilotController.povUp().whileTrue(subsystems.getLeds().runOnce(() -> subsystems.getLeds().setFadeAnimtation(255, 255, 0)));
 
     
     /* Bindings for drivetrain characterization */
@@ -97,32 +110,34 @@ public class RobotContainer {
     return this.subsystems;
   }
 
-  // public Command getAutonomousCommand() {
-  //   /* First put the drivetrain into auto run mode, then run the auto */
-  //   return runAuto;
-  // }
+  public Command getAutonomousCommand() {
+    /* First put the drivetrain into auto run mode, then run the auto */
+    return runAuto;
+  }
 
   public void setEnabledIdleMode() {
     
-    subsystems.getShooter().setDisableIdleMode();
-    subsystems.getIntake().setDisableIdleMode();
-  }
-
-  public void setDisableIdleMode() {
     subsystems.getShooter().setEnableIdleMode();
     subsystems.getIntake().setEnableIdleMode();
+    subsystems.getElevator().setEnableIdleMode();
+  }
+
+  public void setDisabledIdleMode() {
+    subsystems.getShooter().setDisabledIdleMode();
+    subsystems.getIntake().setDisabledIdleMode();
+    subsystems.getElevator().setDisabledIdleMode();
   }
 
   public CommandXboxController getDriverController() {
     return driverController;
   }
 
-  // public Command getAutoPath(String pathName) {
-  //     return new PathPlannerAuto(pathName);
-  // }
+  public Command getAutoPath(String pathName) {
+      return this.subsystems.getDrivetrain().getAutoPath(pathName);
+  }
 
   public void registerNamedCommands() {
-    NamedCommands.registerCommand("AutoShootNoteCommand", new AutoShootNoteCommand(subsystems));
+    NamedCommands.registerCommand("TimedShootNoteCommand", new TimedShootNoteCommand(subsystems));
     NamedCommands.registerCommand("IntakeNoteCommand", new IntakeNoteCommand(subsystems));
   }
 

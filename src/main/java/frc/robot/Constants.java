@@ -32,7 +32,7 @@ public final class Constants
   public static final class VisionConstants {
     public static final String kShooterTableName = "limelight-back";
     public static final String kIntakeTableName = "limelight-front";
-    public static final double kMaxShooterDistance = 0.3; // expressed as tx from limelight
+    public static final double kMaxShooterDistance = 0.4; // expressed as tx from limelight
   }
 
   public static final class DriveConstants {
@@ -189,7 +189,7 @@ public final class Constants
     public static final double kGoundAngle = 100;
     public static final double kHomeAngle = 0;
 
-    public static double kP = 3; 
+    public static double kP = 5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
@@ -219,7 +219,7 @@ public final class Constants
     public static final int kPrimaryWheelCanId = 21;
     public static final int kSecondaryWheelCanId = 22;
 
-    public static double kP = 0.15; 
+    public static double kP = 0.5; 
     public static double kI = 0;
     public static double kD = 0; 
     public static double kIz = 0; 
@@ -237,12 +237,12 @@ public final class Constants
     public static final int kCPR = 8192;
 
     public static final double [][] wristAngles = {
-      {1.13, 0.3},
-      {0.77, 0.6}, //1.1
-      {0.59, 1.2}, //1.9
-      {0.44, 1.9}, //2.3
-      {0.4, 2.3},  //2.5
-      {0.34, 2.6}
+      {1.13, 0.2},
+      {0.77, 0.7}, //1.1
+      {0.59, 1.0}, //1.9
+      {0.44, 1.3}, //2.3
+      {0.4, 1.5},  //2.5
+      {0.34, 1.6}
     };
   }
 
@@ -263,11 +263,11 @@ public final class Constants
     public static double kD = 0; 
     public static double kIz = 0; 
     public static double kFF = 0; 
-    public static double kMaxOutput = 0.2; 
-    public static double kMinOutput = -0.2;
+    public static double kMaxOutput = 0.4; 
+    public static double kMinOutput = -0.4;
     public static double kOffset = 0.7;
-    public static double kMaxRotation = 5;
-    public static double kMinRotation = 0.1;
+    public static double kMaxRotation = -80;
+    public static double kMinRotation = 0;
 
     public static final double maxAcc = 25000;
     public static final double maxVel = 11000;

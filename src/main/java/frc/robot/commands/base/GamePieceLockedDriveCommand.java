@@ -17,7 +17,6 @@ public class GamePieceLockedDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
   CommandXboxController controller;
   private Vision vision;
-  private boolean moveTo;
 
   public GamePieceLockedDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
     this.drivetrain = drivetrain;
@@ -34,13 +33,12 @@ public class GamePieceLockedDriveCommand extends Command {
   public void execute() {
     boolean hasTarget = vision.hasTarget(VisionType.INTAKE);
     double tx = vision.getTx(VisionType.INTAKE);
-    boolean moveTo = controller.a().getAsBoolean();
 
     drivetrain.drive(
-      getForward(vision.getTy(VisionType.INTAKE), hasTarget, moveTo),
+      getForward(vision.getTy(VisionType.INTAKE), vision.getTx(VisionType.INTAKE), hasTarget),
       getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
-      hasTarget && moveTo ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+      hasTarget ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
   }
 
   @Override
@@ -48,9 +46,10 @@ public class GamePieceLockedDriveCommand extends Command {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 
-  private double getForward(double ta, boolean hasTarget, boolean moveTo) {
-    if(hasTarget && moveTo) {
-      return -0.4;
+  private double getForward(double ty, double tx, boolean hasTarget) {
+    if(hasTarget && Math.abs(tx) < 8 && ty < 10) {
+      return -0.4
+       * DriveConstants.MaxSpeed;
     }
     else {
       return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
@@ -63,7 +62,6 @@ public class GamePieceLockedDriveCommand extends Command {
 
   private double getRotation(double tx, boolean hasTarget) {
     if(hasTarget) {
-      System.out.println(-drivetrain.getTargetLockRotation(tx, 0));
       return -drivetrain.getTargetLockRotation(tx, 0);
     }
     else {

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.899742370913313,
-      "y": 5.521063899270655
+      "x": 1.75,
+      "y": 5.45
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "TimedShootNoteCommand"
           }
         },
         {
@@ -22,24 +22,61 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "ToNote1"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "IntakeNoteCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test"
                 }
               }
             ]
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Test1b"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": null
+            "name": "TimedShootNoteCommand"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNoteCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TimedShootNoteCommand"
           }
         },
         {
@@ -49,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ToNote2"
+                  "pathName": "Copy of Test4"
                 }
               },
               {
@@ -64,44 +101,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note2ToSpeaker"
+            "pathName": "Copy of Test5"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ToNote3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNoteCommand"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Note3ToSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
+            "name": "TimedShootNoteCommand"
           }
         }
       ]

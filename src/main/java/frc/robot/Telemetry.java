@@ -27,8 +27,8 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
-        SignalLogger.setPath("/media/sda1/");
-        SignalLogger.start();
+        // SignalLogger.setPath("/media/sda1/");
+        // SignalLogger.start();
     }
 
     /* What to publish over networktables for telemetry */

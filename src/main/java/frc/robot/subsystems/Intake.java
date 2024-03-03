@@ -152,7 +152,7 @@ public class Intake extends SubsystemBase {
     secondaryWrist.setIdleMode(IdleMode.kBrake);
   }
 
-  public void setDisableIdleMode() {
+  public void setDisabledIdleMode() {
     intake.setNeutralMode(NeutralModeValue.Coast);
     primaryWrist.setIdleMode(IdleMode.kCoast);
     secondaryWrist.setIdleMode(IdleMode.kCoast);

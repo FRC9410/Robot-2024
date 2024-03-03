@@ -107,16 +107,16 @@ public class Shooter extends SubsystemBase {
     //   this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     // }
 
-    SmartDashboard.putNumber("Shooter Wrist Actual", this.encoder.getPosition());
-    SmartDashboard.putNumber("Shooter Wrist Setpoint", wristSetpoint);
-    SmartDashboard.putNumber("Primary Wheel Actual", primaryWheel.getRotorVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Secondary Wheel Actual", secondaryWheel.getRotorVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Primary Wheel Current", primaryWheel.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Primary Wheel Voltage", primaryWheel.getSupplyVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Secondary Wheel Current", secondaryWheel.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Secondary Wheel Voltage", secondaryWheel.getSupplyVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Secondary Wheel Setpoint", primaryWheelVoltageVelocity.Velocity);
-    SmartDashboard.putNumber("Primary Wheel Setpoint", secondaryWheelVoltageVelocity.Velocity);
+    // SmartDashboard.putNumber("Shooter Wrist Actual", this.encoder.getPosition());
+    // SmartDashboard.putNumber("Shooter Wrist Setpoint", wristSetpoint);
+    // SmartDashboard.putNumber("Primary Wheel Actual", primaryWheel.getRotorVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Secondary Wheel Actual", secondaryWheel.getRotorVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Primary Wheel Current", primaryWheel.getSupplyCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber("Primary Wheel Voltage", primaryWheel.getSupplyVoltage().getValueAsDouble());
+    // SmartDashboard.putNumber("Secondary Wheel Current", secondaryWheel.getSupplyCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber("Secondary Wheel Voltage", secondaryWheel.getSupplyVoltage().getValueAsDouble());
+    // SmartDashboard.putNumber("Secondary Wheel Setpoint", primaryWheelVoltageVelocity.Velocity);
+    // SmartDashboard.putNumber("Primary Wheel Setpoint", secondaryWheelVoltageVelocity.Velocity);
     // System.out.println(primaryWheel.getVelocity());
   }
 
@@ -235,21 +235,20 @@ public class Shooter extends SubsystemBase {
   public boolean isShooterReady() {
     return Math.abs(primaryWheel.getVelocity().getValueAsDouble()) > 70
     && Math.abs(secondaryWheel.getVelocity().getValueAsDouble()) > 70
-    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(ShooterConstants.kSpeakerFeederSpeed) - 5
-    && encoder.getPosition() > (wristSetpoint - 0.2)
+    && Math.abs(feeder.getVelocity().getValueAsDouble()) > Math.abs(ShooterConstants.kSpeakerFeederSpeed) - 15
+    && encoder.getPosition() > (wristSetpoint - 0.1)
     && encoder.getPosition() < (wristSetpoint);
   }
   public void setEnableIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);
     primaryWheel.setNeutralMode(NeutralModeValue.Coast);
-
     secondaryWheel.setNeutralMode(NeutralModeValue.Coast);
     primaryWrist.setIdleMode(IdleMode.kBrake);
     secondaryWrist.setIdleMode(IdleMode.kBrake);
 
   }
 
-  public void setDisableIdleMode() {
+  public void setDisabledIdleMode() {
     feeder.setNeutralMode(NeutralModeValue.Coast);
     primaryWheel.setNeutralMode(NeutralModeValue.Coast);
     secondaryWheel.setNeutralMode(NeutralModeValue.Coast);

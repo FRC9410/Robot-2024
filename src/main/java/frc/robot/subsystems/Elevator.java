@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -66,7 +67,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Actual Position", this.encoder.getPosition()); 
 
     double newSetpoint = SmartDashboard.getNumber("Elevator Position", IntakeWrist.kMinRotation);
-    if (setpoint != newSetpoint) {
+    if (setpoint != newSetpoint && newSetpoint < 0) {
       setpoint = newSetpoint;
       this.pidController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     }
@@ -87,9 +88,22 @@ public class Elevator extends SubsystemBase {
   public void setElevatorPosition(double position) {
     this.pidController.setReference(position, CANSparkMax.ControlType.kPosition);
   }
-  //might change later to set distance :)
+
+  public void setElevatorPosition() {
+    this.pidController.setReference(ElevatorConstants.kMaxRotation, CANSparkMax.ControlType.kPosition);
+  }
  
   public void elevatorOff() {
     this.pidController.setReference(ElevatorConstants.kMinRotation, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setEnableIdleMode() {
+    primaryElevator.setIdleMode(IdleMode.kBrake);
+    secondaryElevator.setIdleMode(IdleMode.kBrake);
+  }
+
+  public void setDisabledIdleMode() {
+    primaryElevator.setIdleMode(IdleMode.kCoast);
+    secondaryElevator.setIdleMode(IdleMode.kCoast);
   }
 }

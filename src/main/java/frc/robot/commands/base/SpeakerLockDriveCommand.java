@@ -10,23 +10,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
 import frc.robot.subsystems.Vision.VisionType;
 import frc.robot.utils.Utility;
 
-public class AprilTagLockDriveCommand extends Command {
+public class SpeakerLockDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
   CommandXboxController controller;
   private Vision vision;
   private int targetTagId;
+  private String allianceColor;
   private int framesSinceLastTarget;
 
-  public AprilTagLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
+  public SpeakerLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller, String allianceColor) {
     this.drivetrain = drivetrain;
     this.vision = vision;
     this.controller = controller;
+    this.allianceColor = allianceColor;
     targetTagId = 0;
     framesSinceLastTarget = 0;
 
@@ -35,33 +38,38 @@ public class AprilTagLockDriveCommand extends Command {
 
   @Override
   public void initialize() {
-    vision.setPipeline(VisionType.SHOOTER, 1);
+    if (allianceColor == "red"){
+      vision.setPipeline(VisionType.SHOOTER, 1);
+    }
+    else {
+      vision.setPipeline(VisionType.SHOOTER, 0);
+    }
   }
 
   @Override
   public void execute() {
     boolean hasTarget = vision.hasTarget(VisionType.SHOOTER);
-    boolean moveTo = controller.a().getAsBoolean();
     double tx = vision.getTx(VisionType.SHOOTER);
     int tagId = 0;
     if(hasTarget) {
       tagId = vision.getTagId(VisionType.SHOOTER);
-      if(tagId == 3 || tagId == 8) {
+      if(!(tagId == 4 || tagId == 7)) {
         hasTarget = false;
       }
-      framesSinceLastTarget = 0;
+      else {
+        framesSinceLastTarget = 0;
+      }
     }
-    else if (!hasTarget && framesSinceLastTarget < 3) {
+    else if (!hasTarget && framesSinceLastTarget < 4) {
       hasTarget = true;
+      framesSinceLastTarget++;
     }
     else {
       framesSinceLastTarget++;
     }
 
-    moveTo = moveTo && DriveConstants.moveToTags.contains(tagId);
-
     drivetrain.drive(
-      getForward(vision.getTa(VisionType.SHOOTER), hasTarget, moveTo),
+      getForward(vision.getTa(VisionType.SHOOTER), hasTarget),
       getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
       hasTarget ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
@@ -72,9 +80,10 @@ public class AprilTagLockDriveCommand extends Command {
     drivetrain.drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
   }
 
-  private double getForward(double ta, boolean hasTarget, boolean moveTo) {
-    if(hasTarget && moveTo) {
-      return drivetrain.getTargetLockForward(getForwardSetpoint(vision.getTagId(VisionType.SHOOTER)) - ta, 0);
+  private double getForward(double ta, boolean hasTarget) {
+    if(hasTarget && ta < VisionConstants.kMaxShooterDistance && Math.abs(controller.getLeftY()) < 0.8) {
+      // return -drivetrain.getTargetLockForward(1 - ta, 0);
+      return 0.2 * DriveConstants.MaxSpeed;
     }
     else {
       return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
@@ -82,27 +91,27 @@ public class AprilTagLockDriveCommand extends Command {
   }
 
   private double getStrafe(double tx, boolean hasTarget) {
-    if(hasTarget) {
-      return drivetrain.getTargetLockStrafe(tx, 0);
-    }
-    else {
+    // if(hasTarget) {
+    //   return drivetrain.getTargetLockStrafe(tx, 0);
+    // }
+    // else {
       return Utility.getSpeed(controller.getLeftX()) * DriveConstants.MaxShootingSpeed;
-    }
+    // }
   }
 
   private double getRotation(double tx, boolean hasTarget) {
     if(!hasTarget) {
       return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxShootingSpeed;
     }
-    double currentPoseRotation = drivetrain.getPose().getRotation().getDegrees();
-    double setpoint = hasTarget ? getRotationSetpoint(vision.getTagId(VisionType.SHOOTER)) : 0;
-    double distance = setpoint - currentPoseRotation;
-    SmartDashboard.putNumber("tagId", vision.getTagId(VisionType.SHOOTER));
-    SmartDashboard.putNumber("driving distance", distance);
-    SmartDashboard.putNumber("setpoint", setpoint);
-    double error = distance < 180 && distance > -180 ? distance : distance > 180 ? distance - 360 : distance + 360;
+    // double currentPoseRotation = drivetrain.getPose().getRotation().getDegrees();
+    // double setpoint = hasTarget ? getRotationSetpoint(vision.getTagId(VisionType.SHOOTER)) : 0;
+    // double distance = setpoint - currentPoseRotation;
+    // SmartDashboard.putNumber("tagId", vision.getTagId(VisionType.SHOOTER));
+    // SmartDashboard.putNumber("driving distance", distance);
+    // SmartDashboard.putNumber("setpoint", setpoint);
+    // double error = distance < 180 && distance > -180 ? distance : distance > 180 ? distance - 360 : distance + 360;
 
-    return drivetrain.getRotationLockRotation(error, 0);
+    return -drivetrain.getRotationLockRotation(tx, 0);
   }
 
   // measured in ta
