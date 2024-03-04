@@ -7,12 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -49,8 +46,7 @@ public class Robot extends TimedRobot {
 
     if(hasTarget && ta >= VisionConstants.kMaxShooterDistance
       && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4
-      || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)
-      ||robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 15) {
+      || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
         robotContainer.getSubsystems().getLeds().setFadeAnimtation(255, 121, 198);
     }
     else {
@@ -95,8 +91,6 @@ public class Robot extends TimedRobot {
       );
       robotContainer.getSubsystems().getDrivetrain().seedFieldRelative(newPose);
     } 
-    // double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);
-    // robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ta);
   }
 
   @Override
