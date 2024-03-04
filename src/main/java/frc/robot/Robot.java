@@ -43,6 +43,19 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("current Pose", robotContainer.getSubsystems().getDrivetrain().getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
     SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
+    
+    boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
+    double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);
+
+    if(hasTarget && ta >= VisionConstants.kMaxShooterDistance
+      && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4
+      || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)
+      ||robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 15) {
+        robotContainer.getSubsystems().getLeds().setFadeAnimtation(255, 121, 198);
+    }
+    else {
+      robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
+    }
   } 
 
   @Override
@@ -69,7 +82,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-back");
+  public void autonomousPeriodic() {
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-back");
     Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue("limelight-back");
     if (limelightMeasurement.tagCount >= 2 && limelightMeasurement.avgTagArea > 0.2) {
       Pose2d newPose = pose.toPose2d();
@@ -125,16 +139,6 @@ public class Robot extends TimedRobot {
       && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4
       || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
         robotContainer.getSubsystems().getShooter().setWristAngleSetpoint(ta);
-    }
-    
-    if(hasTarget && ta >= VisionConstants.kMaxShooterDistance
-      && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4
-      || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)
-      ||robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 15) {
-        robotContainer.getSubsystems().getLeds().setFadeAnimtation(255, 121, 198);
-    }
-    else {
-      robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
     }
   }
 

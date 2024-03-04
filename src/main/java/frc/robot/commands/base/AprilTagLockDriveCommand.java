@@ -5,7 +5,6 @@
 
 package frc.robot.commands.base;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -20,14 +19,14 @@ public class AprilTagLockDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
   CommandXboxController controller;
   private Vision vision;
-  private int targetTagId;
   private int framesSinceLastTarget;
+  private String allianceColor;
 
-  public AprilTagLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
+  public AprilTagLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller, String allianceColor) {
     this.drivetrain = drivetrain;
     this.vision = vision;
     this.controller = controller;
-    targetTagId = 0;
+    this.allianceColor = allianceColor;
     framesSinceLastTarget = 0;
 
     addRequirements(drivetrain);
@@ -35,7 +34,12 @@ public class AprilTagLockDriveCommand extends Command {
 
   @Override
   public void initialize() {
+    if(allianceColor == "red") {
     vision.setPipeline(VisionType.SHOOTER, 1);
+    }
+    else {
+      vision.setPipeline(VisionType.SHOOTER, 0);
+    }
   }
 
   @Override

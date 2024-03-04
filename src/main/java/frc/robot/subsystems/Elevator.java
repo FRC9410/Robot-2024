@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeWrist;
-import frc.robot.Constants.ShooterWrist;
 
 public class Elevator extends SubsystemBase {
   private SparkPIDController pidController;
@@ -103,7 +101,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public void setDisabledIdleMode() {
-    primaryElevator.setIdleMode(IdleMode.kCoast);
-    secondaryElevator.setIdleMode(IdleMode.kCoast);
+    primaryElevator.setIdleMode(IdleMode.kBrake);
+    secondaryElevator.setIdleMode(IdleMode.kBrake);
+  }
+
+  public double getPosition() {
+    return this.encoder.getPosition();
   }
 }

@@ -263,8 +263,8 @@ public final class Constants
     public static double kD = 0; 
     public static double kIz = 0; 
     public static double kFF = 0; 
-    public static double kMaxOutput = 0.4; 
-    public static double kMinOutput = -0.4;
+    public static double kMaxOutput = 0.5; 
+    public static double kMinOutput = -0.5;
     public static double kOffset = 0.7;
     public static double kMaxRotation = -80;
     public static double kMinRotation = 0;

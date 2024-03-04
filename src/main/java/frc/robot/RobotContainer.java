@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -18,8 +21,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.base.DefaultDriveCommand;
+import frc.robot.commands.base.ElevatorCommand;
 import frc.robot.commands.base.GamePieceLockedDriveCommand;
 import frc.robot.commands.base.SpeakerLockDriveCommand;
+import frc.robot.commands.base.StageLockDriveCommand;
 import frc.robot.commands.base.AmpPositionLockDriveCommand;
 import frc.robot.commands.base.AprilTagLockDriveCommand;
 import frc.robot.commands.base.VoltageIntakeCommand;
@@ -28,6 +33,7 @@ import frc.robot.commands.group.CenterNoteCommand;
 import frc.robot.commands.group.EjectNoteCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
+import frc.robot.commands.group.ScoreTrapCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.commands.group.ShootTrapCommand;
 import frc.robot.commands.group.TimedShootNoteCommand;
@@ -40,17 +46,17 @@ public class RobotContainer {
   private Subsystems subsystems = new Subsystems();
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
   public String allianceColor;
-  private Command runAuto = getAutoPath("Test1");
+  private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
     setAllianceColor();
-    allianceColor = "blue";
     registerNamedCommands();
     configurePilotBindings();
     configureCopilotBindings();
     subsystems.getLeds().setFadeAnimtation(0, 255, 255);
-    runAuto = getAutoPath("Test2");
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   private void configurePilotBindings() {
@@ -85,6 +91,10 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
 
     driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain(), allianceColor));
+
+    driverController.x().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
+    
+    driverController.b().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
   }
 
   private void configureCopilotBindings() {
@@ -93,7 +103,8 @@ public class RobotContainer {
     copilotController.b().onTrue(new EjectNoteCommand(subsystems));
     copilotController.a().onTrue(new CenterNoteCommand(subsystems));
     copilotController.rightTrigger(0.5).whileTrue(new ShootTrapCommand(subsystems));
-    copilotController.povUp().whileTrue(subsystems.getLeds().runOnce(() -> subsystems.getLeds().setFadeAnimtation(255, 255, 0)));
+    driverController.back().and(copilotController.rightBumper()).onTrue(new ScoreTrapCommand(subsystems));
+    driverController.back().and(copilotController.leftStick()).whileTrue(new ElevatorCommand(subsystems.getElevator(), copilotController.getLeftY()));
 
     
     /* Bindings for drivetrain characterization */
@@ -112,7 +123,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     /* First put the drivetrain into auto run mode, then run the auto */
-    return runAuto;
+    return autoChooser.getSelected();
   }
 
   public void setEnabledIdleMode() {

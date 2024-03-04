@@ -10,24 +10,34 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DriveMode;
 
-public class AmpPositionLockDriveCommand extends Command {
+public class StageLockDriveCommand extends Command {
   CommandSwerveDrivetrain drivetrain;
-  String allianceColor;
+  boolean isStageLeft;
+  String xCoordinate;
+  String yCoordinate;
+  double rotation;
 
-  public AmpPositionLockDriveCommand(CommandSwerveDrivetrain drivetrain, String allianceColor) {
+  public StageLockDriveCommand(CommandSwerveDrivetrain drivetrain, boolean isStageLeft) {
     this.drivetrain = drivetrain;
-    this.allianceColor = allianceColor;
 
     addRequirements(drivetrain);
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+      xCoordinate = "2.2";
+    if (isStageLeft) {
+      yCoordinate = "5.5";
+      rotation = 240.0;
+    } else {
+      yCoordinate = "6.5";
+      rotation = 120.0;
+    }
+  }
 
   @Override
   public void execute() {
     Pose2d pose = drivetrain.getPose();
-    double rotation = allianceColor == "red" ? 90.0 : 270.0;
     drivetrain.drive(
       getForward(pose.getX()),
       getStrafe(pose.getY()),
