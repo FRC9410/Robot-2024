@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("current Pose", robotContainer.getSubsystems().getDrivetrain().getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
     SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
+    SmartDashboard.putNumber("shooter pipeline", robotContainer.getSubsystems().getVision().getPipeline(VisionType.SHOOTER));
     
     boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
     double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);

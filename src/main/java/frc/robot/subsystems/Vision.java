@@ -53,6 +53,10 @@ public class Vision extends SubsystemBase {
     getTable(type).getEntry("pipeline").setNumber(pipeline);
   }
 
+  public int getPipeline(VisionType type) {
+    return (int) getTable(type).getEntry("getpipe").getDouble(-1);
+  }
+
   private NetworkTable getTable(VisionType type) {
     switch (type) {
       case SHOOTER:
