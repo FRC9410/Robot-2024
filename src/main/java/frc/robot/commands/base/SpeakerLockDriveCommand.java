@@ -6,6 +6,7 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -22,14 +23,12 @@ public class SpeakerLockDriveCommand extends Command {
   CommandXboxController controller;
   private Vision vision;
   private int targetTagId;
-  private String allianceColor;
   private int framesSinceLastTarget;
 
-  public SpeakerLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller, String allianceColor) {
+  public SpeakerLockDriveCommand(CommandSwerveDrivetrain drivetrain, Vision vision, CommandXboxController controller) {
     this.drivetrain = drivetrain;
     this.vision = vision;
     this.controller = controller;
-    this.allianceColor = allianceColor;
     targetTagId = 0;
     framesSinceLastTarget = 0;
 
@@ -38,7 +37,7 @@ public class SpeakerLockDriveCommand extends Command {
 
   @Override
   public void initialize() {
-    if (allianceColor == "red"){
+    if (getAllianceColor() == "red"){
       vision.setPipeline(VisionType.SHOOTER, 1);
     }
     else {
@@ -113,6 +112,14 @@ public class SpeakerLockDriveCommand extends Command {
 
     return -drivetrain.getRotationLockRotation(tx, 0);
   }
+
+  public String getAllianceColor() {
+      var alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red ? "red" : "blue";
+      }
+      return "blue";
+    }
 
   // measured in ta
   private double getForwardSetpoint(int tagId) {

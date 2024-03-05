@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
     SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
     SmartDashboard.putNumber("shooter pipeline", robotContainer.getSubsystems().getVision().getPipeline(VisionType.SHOOTER));
+    
+    var alliance = DriverStation.getAlliance();
+    SmartDashboard.putBoolean("has alliance", alliance.isPresent());
+    SmartDashboard.putString("alliance color", alliance.get() == DriverStation.Alliance.Red ? "red" : "blue");
     
     boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
     double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);
@@ -108,7 +113,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight-back");
-    Pose3d pose = robotContainer.allianceColor == "red"
+    Pose3d pose = robotContainer.getAllianceColor() == "red"
       ? LimelightHelpers.getBotPose3d_wpiRed("limelight-back")
       : LimelightHelpers.getBotPose3d_wpiBlue("limelight-back");
     

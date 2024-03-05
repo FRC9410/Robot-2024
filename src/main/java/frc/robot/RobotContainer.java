@@ -45,12 +45,10 @@ public class RobotContainer {
   private final CommandXboxController copilotController = new CommandXboxController(1);
   private Subsystems subsystems = new Subsystems();
   private final Telemetry logger = new Telemetry(DriveConstants.MaxSpeed);
-  public String allianceColor;
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
-    setAllianceColor();
     registerNamedCommands();
     configurePilotBindings();
     configureCopilotBindings();
@@ -85,12 +83,11 @@ public class RobotContainer {
         .alongWith(new SpeakerLockDriveCommand(
           subsystems.getDrivetrain(),
           subsystems.getVision(),
-          driverController,
-          allianceColor)));
+          driverController)));
     
     driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
 
-    driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain(), allianceColor));
+    driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain()));
 
     driverController.x().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
     
@@ -102,9 +99,10 @@ public class RobotContainer {
     copilotController.y().onTrue(new ScoreAmpCommand(subsystems));
     copilotController.b().onTrue(new EjectNoteCommand(subsystems));
     copilotController.a().onTrue(new CenterNoteCommand(subsystems));
-    copilotController.rightTrigger(0.5).whileTrue(new ShootTrapCommand(subsystems));
+    copilotController.rightBumper().whileTrue(new ShootTrapCommand(subsystems));
     driverController.back().and(copilotController.rightBumper()).onTrue(new ScoreTrapCommand(subsystems));
-    driverController.back().and(copilotController.leftStick()).whileTrue(new ElevatorCommand(subsystems.getElevator(), copilotController.getLeftY()));
+    driverController.back().and(copilotController.rightTrigger(0.5)).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
+    driverController.back().and(copilotController.leftTrigger(0.5)).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
 
     
     /* Bindings for drivetrain characterization */
@@ -152,8 +150,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeNoteCommand", new IntakeNoteCommand(subsystems));
   }
 
-  public void setAllianceColor() {
-    DriverStation.getAlliance().ifPresent((alliance) ->
-      allianceColor = (alliance == Alliance.Red ? "red" : "blue"));
-  }
+  public String getAllianceColor() {
+      var alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red ? "red" : "blue";
+      }
+      return "blue";
+    }
 }

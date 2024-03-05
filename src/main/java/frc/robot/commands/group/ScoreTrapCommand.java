@@ -31,7 +31,7 @@ public class ScoreTrapCommand extends SequentialCommandGroup {
         new ShootCommand(subsystems.getShooter(), -10)
       ),
       new ParallelRaceGroup(
-        new AutoElevatorCommand(subsystems.getElevator(), -80),
+        new AutoElevatorCommand(subsystems.getElevator(), -75),
         new WaitCommand(0.4)
       ),
       new ParallelRaceGroup(

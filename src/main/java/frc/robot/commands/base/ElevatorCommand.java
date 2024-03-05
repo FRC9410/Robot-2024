@@ -15,7 +15,7 @@ public class ElevatorCommand extends Command {
   public ElevatorCommand(Elevator elevator, double direction) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
-    this.position = Math.abs(direction) < 0.5 ? elevator.getPosition() : direction > 0 ? -80.0 : 0.0;
+    this.position = Math.abs(direction) < 0.5 ? elevator.getPosition() : direction > 0 ? -75.0 : 0.0;
   }
 
   // Called when the command is initially scheduled.
