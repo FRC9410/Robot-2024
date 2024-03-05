@@ -33,6 +33,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     driverController = robotContainer.getDriverController();
+    
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 1);
+    }
+    else {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 2);
+    }
   }
 
   @Override
@@ -76,6 +84,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 0);
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     if (autonomousCommand != null) {
@@ -106,6 +115,13 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
+    }
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 1);
+    }
+    else {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 2);
     }
     // robotContainer.getSubsystems().getMusic().playSong("jackSparrow");
   }

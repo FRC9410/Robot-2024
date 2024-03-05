@@ -52,7 +52,6 @@ public class RobotContainer {
     registerNamedCommands();
     configurePilotBindings();
     configureCopilotBindings();
-    subsystems.getLeds().setFadeAnimtation(0, 255, 255);
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
