@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Test"
+                  "pathName": "Red Get Note 2"
                 }
               }
             ]
@@ -39,7 +39,38 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test1b"
+            "pathName": "Red Shoot Note 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "TimedShootNoteCommand"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeNoteCommand"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Get Note 3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot Note 3"
           }
         },
         {

@@ -78,37 +78,6 @@
           "data": {
             "name": "TimedShootNoteCommand"
           }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Blue Get Note 4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNoteCommand"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Blue Shoot Note 4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "TimedShootNoteCommand"
-          }
         }
       ]
     }
