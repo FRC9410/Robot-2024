@@ -41,6 +41,8 @@ public class Robot extends TimedRobot {
     else {
       robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 2);
     }
+
+    robotContainer.getSubsystems().getDrivetrain().pointWheels(0);
   }
 
   @Override

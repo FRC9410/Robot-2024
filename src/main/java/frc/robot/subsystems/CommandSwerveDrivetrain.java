@@ -205,6 +205,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         applyRequest(() -> brake);
     }
 
+    public void pointWheels(double degrees) {
+        applyRequest(() -> point.withModuleDirection(Rotation2d.fromDegrees(degrees)));
+    }
+
     public void stopMotors() {
         drive(0, 0, 0, DriveMode.FIELD_RELATIVE);
     }
