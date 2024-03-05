@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Red Get Note 2"
+                  "pathName": "Path - Red Get Note 2"
                 }
               }
             ]
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Red Shoot Note 2"
+            "pathName": "Path - Red Shoot Note 2"
           }
         },
         {
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Get Note 3"
+                  "pathName": "Path - Get Note 3"
                 }
               }
             ]
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot Note 3"
+            "pathName": "Path - Shoot Note 3"
           }
         },
         {

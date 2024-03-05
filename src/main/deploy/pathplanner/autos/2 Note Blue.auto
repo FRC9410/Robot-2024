@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Get Note 2"
+                  "pathName": "Path - Blue Get Note 2"
                 }
               }
             ]
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Shoot Note 2"
+            "pathName": "Path - Blue Shoot Note 2"
           }
         },
         {

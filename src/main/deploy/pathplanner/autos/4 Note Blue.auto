@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Get Note 2"
+                  "pathName": "Path - Blue Get Note 2"
                 }
               }
             ]
@@ -39,7 +39,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Shoot Note 2"
+            "pathName": "Path - Blue Shoot Note 2"
           }
         },
         {
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Get Note 3"
+                  "pathName": "Path - Get Note 3"
                 }
               }
             ]
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot Note 3"
+            "pathName": "Path - Shoot Note 3"
           }
         },
         {
@@ -86,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Blue Get Note 4"
+                  "pathName": "Path - Blue Get Note 4"
                 }
               },
               {
@@ -101,7 +101,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Blue Shoot Note 4"
+            "pathName": "Path - Blue Shoot Note 4"
           }
         },
         {
