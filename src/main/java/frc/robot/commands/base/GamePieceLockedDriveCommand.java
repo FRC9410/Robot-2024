@@ -38,7 +38,7 @@ public class GamePieceLockedDriveCommand extends Command {
       getForward(vision.getTy(VisionType.INTAKE), vision.getTx(VisionType.INTAKE), hasTarget),
       getStrafe(tx, hasTarget),
       getRotation(tx, hasTarget),
-      hasTarget ? DriveMode.ROBOT_RELATIVE : DriveMode.FIELD_RELATIVE);
+      DriveMode.ROBOT_RELATIVE);
   }
 
   @Override
@@ -52,7 +52,7 @@ public class GamePieceLockedDriveCommand extends Command {
        * DriveConstants.MaxSpeed;
     }
     else {
-      return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed;
+      return Utility.getSpeed(controller.getLeftY()) * DriveConstants.MaxShootingSpeed * 0.5;
     }
   }
 
@@ -61,6 +61,9 @@ public class GamePieceLockedDriveCommand extends Command {
   }
 
   private double getRotation(double tx, boolean hasTarget) {
+    if(Math.abs(controller.getRightX()) > 0.2) {
+      return Utility.getSpeed(controller.getRightX()) * DriveConstants.MaxIntakingSpeed;
+    }
     if(hasTarget) {
       return -drivetrain.getTargetLockRotation(tx, 0);
     }

@@ -26,14 +26,14 @@ public class TimedShootNoteCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ParallelRaceGroup(
-        new WaitCommand(0.4),
+        new WaitCommand(0.2),
         new ShootCommand(subsystems.getShooter(),70),
         new AutoVoltageFeedCommand(subsystems.getShooter()),
         // new AutoShooterWristCommand(subsystems.getShooter()),
         new AutoIntakeWristCommand(subsystems.getIntake())
       ),
       new ParallelRaceGroup(
-        new WaitCommand(0.4),
+        new WaitCommand(0.2),
         new ShootCommand(subsystems.getShooter(),70),
         new AutoVoltageFeedCommand(subsystems.getShooter()),
         // new AutoShooterWristCommand(subsystems.getShooter()),

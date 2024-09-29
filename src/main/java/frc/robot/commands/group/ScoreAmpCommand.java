@@ -27,11 +27,11 @@ public class ScoreAmpCommand extends SequentialCommandGroup {
         new WaitCommand(0.25),
         new FeedCommand(subsystems.getShooter(), -30, -8, 1.8),
         new IntakeCommand(subsystems.getIntake(), 30, 12, 0),
-        new ShootCommand(subsystems.getShooter(), -10)
+        new ShootCommand(subsystems.getShooter(), -40)
       ),
       new ParallelRaceGroup(
         new ShooterWristCommand(subsystems.getShooter(), 16, true),
-        new WaitCommand(0.4)
+        new WaitCommand(0.7)
       ),
       new ParallelRaceGroup(
         new WaitCommand(0.4),

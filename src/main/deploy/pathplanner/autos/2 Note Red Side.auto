@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.75,
-      "y": 5.45
+      "x": 0.75,
+      "y": 6.8
     },
     "rotation": 0
   },
@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Path - Blue Get Note 2"
+                  "pathName": "Red Get Note 3b"
                 }
               }
             ]
@@ -43,7 +43,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Path - Blue Shoot Note 2"
+                  "pathName": "Path - Red Shoot Note 3"
                 }
               },
               {
@@ -66,15 +66,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "IntakeNoteCommand"
+                  "pathName": "Path - Red Get Note 4a"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Path - Blue Get Note 3"
+                  "name": "IntakeNoteCommand"
                 }
               }
             ]
@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Path - Blue Shoot Note 3"
+                  "pathName": "Path - Red Shoot Note 4"
                 }
               },
               {

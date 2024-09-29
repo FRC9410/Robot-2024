@@ -31,12 +31,15 @@ import frc.robot.commands.base.VoltageIntakeCommand;
 import frc.robot.commands.group.AutoShootNoteCommand;
 import frc.robot.commands.group.CenterNoteCommand;
 import frc.robot.commands.group.EjectNoteCommand;
+import frc.robot.commands.group.FeedShooterCommand;
 import frc.robot.commands.group.IntakeNoteCommand;
 import frc.robot.commands.group.ScoreAmpCommand;
 import frc.robot.commands.group.ScoreTrapCommand;
 import frc.robot.commands.group.ShootNoteCommand;
 import frc.robot.commands.group.ShootTrapCommand;
+import frc.robot.commands.group.SpinUpShooterCommand;
 import frc.robot.commands.group.TimedShootNoteCommand;
+import frc.robot.commands.group.YeetNoteCommand;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
@@ -62,46 +65,61 @@ public class RobotContainer {
       subsystems.getDrivetrain().seedFieldRelative();
     }));
     
-    subsystems.getDrivetrain().setDefaultCommand(
-      new DefaultDriveCommand(
-        subsystems.getDrivetrain(),
-        driverController));
+    // subsystems.getDrivetrain().setDefaultCommand(
+    //   new DefaultDriveCommand(
+    //     subsystems.getDrivetrain(),
+    //     driverController));
 
-    driverController.leftTrigger(0.5).whileTrue(
-      new GamePieceLockedDriveCommand(
-        subsystems.getDrivetrain(),
-        subsystems.getVision(),
-        driverController)
-        .alongWith(new IntakeNoteCommand(subsystems)))
+    // driverController.leftTrigger(0.5).whileTrue(
+    //   new GamePieceLockedDriveCommand(
+    //     subsystems.getDrivetrain(),
+    //     subsystems.getVision(),
+    //     driverController)
+    //     .alongWith(new IntakeNoteCommand(subsystems)))
+    //     .onFalse(new ParallelRaceGroup(
+    //       new WaitCommand(1),
+    //       new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
+
+        driverController.leftTrigger(0.5).whileTrue(new IntakeNoteCommand(subsystems))
         .onFalse(new ParallelRaceGroup(
           new WaitCommand(1),
-          new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));
+          new VoltageIntakeCommand(subsystems.getIntake(), -10, -6, 100)));;
 
-    driverController.rightTrigger(0.5).whileTrue(
-      new AutoShootNoteCommand(subsystems)
-        .alongWith(new SpeakerLockDriveCommand(
-          subsystems.getDrivetrain(),
-          subsystems.getVision(),
-          driverController)));
+    // driverController.rightTrigger(0.5).whileTrue(
+    //   new SpeakerLockDriveCommand(
+    //     subsystems.getDrivetrain(),
+    //     subsystems.getVision(),
+    //     driverController).alongWith(new SpinUpShooterCommand(subsystems)));
     
-    driverController.rightBumper().whileTrue(new ShootNoteCommand(subsystems));
+    // driverController.rightBumper().and(driverController.rightTrigger(0.5)).whileTrue(new FeedShooterCommand(subsystems));
+    driverController.rightBumper().whileTrue(new TimedShootNoteCommand(subsystems));
 
-    driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain()));
+    // driverController.leftBumper().whileTrue(new AmpPositionLockDriveCommand(subsystems.getDrivetrain()));
 
-    driverController.x().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
+    // driverController.x().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
     
-    driverController.b().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
+    //driverController.b().whileTrue(new StageLockDriveCommand(subsystems.getDrivetrain(), true));
+
+    // driverController.b().whileTrue(new YeetNoteCommand(subsystems));
+
+    // driverController.a().whileTrue(
+    //   new AutoShootNoteCommand(subsystems)
+    //     .alongWith(new SpeakerLockDriveCommand(
+    //       subsystems.getDrivetrain(),
+    //       subsystems.getVision(),
+    //       driverController)));
   }
 
   private void configureCopilotBindings() {
     copilotController.x().whileTrue(new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
     copilotController.y().onTrue(new ScoreAmpCommand(subsystems));
-    copilotController.b().onTrue(new EjectNoteCommand(subsystems));
-    copilotController.a().onTrue(new CenterNoteCommand(subsystems));
-    copilotController.rightBumper().whileTrue(new ShootTrapCommand(subsystems));
-    driverController.back().and(copilotController.rightBumper()).onTrue(new ScoreTrapCommand(subsystems));
-    driverController.back().and(copilotController.rightTrigger(0.5)).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
-    driverController.back().and(copilotController.leftTrigger(0.5)).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
+    // copilotController.b().onTrue(new EjectNoteCommand(subsystems));
+    // copilotController.a().onTrue(new CenterNoteCommand(subsystems));
+    // copilotController.rightBumper().whileTrue(new ShootTrapCommand(subsystems));
+    // copilotController.rightBumper().onTrue(new ScoreTrapCommand(subsystems));
+    // driverController.back().and(copilotController.start()).whileTrue(new ShootTrapCommand(subsystems));
+    // copilotController.rightTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), 1));
+    // copilotController.leftTrigger(0.5).whileTrue(new ElevatorCommand(subsystems.getElevator(), -1));
 
     
     /* Bindings for drivetrain characterization */
@@ -147,6 +165,7 @@ public class RobotContainer {
   public void registerNamedCommands() {
     NamedCommands.registerCommand("TimedShootNoteCommand", new TimedShootNoteCommand(subsystems));
     NamedCommands.registerCommand("IntakeNoteCommand", new IntakeNoteCommand(subsystems));
+    NamedCommands.registerCommand("IntakeCommand", new VoltageIntakeCommand(subsystems.getIntake(), -10, -6,100));
   }
 
   public String getAllianceColor() {

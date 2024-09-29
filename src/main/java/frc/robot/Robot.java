@@ -4,19 +4,27 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.Vision.VisionType;
 
 public class Robot extends TimedRobot {
@@ -33,6 +41,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     driverController = robotContainer.getDriverController();
+    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320,240,30);
+    
     
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
@@ -50,15 +60,22 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("x", robotContainer.getSubsystems().getDrivetrain().getPose().getX());
     SmartDashboard.putNumber("y", robotContainer.getSubsystems().getDrivetrain().getPose().getY());
     SmartDashboard.putNumber("shooter pipeline", robotContainer.getSubsystems().getVision().getPipeline(VisionType.SHOOTER));
-    
+    SmartDashboard.putNumber("Shooter Angle", robotContainer.getSubsystems().getShooter().getEncoderPosition());
     var alliance = DriverStation.getAlliance();
     SmartDashboard.putBoolean("has alliance", alliance.isPresent());
     SmartDashboard.putString("alliance color", alliance.get() == DriverStation.Alliance.Red ? "red" : "blue");
+
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 1);
+    }
+    else {
+      robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 2);
+    }
     
     boolean hasTarget = robotContainer.getSubsystems().getVision().hasTarget(VisionType.SHOOTER);
     double ta = robotContainer.getSubsystems().getVision().getTa(VisionType.SHOOTER);
 
-    if(hasTarget && ta >= VisionConstants.kMaxShooterDistance
+    if(hasTarget && ta >= 0.075
       && (robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 4
       || robotContainer.getSubsystems().getVision().getTagId(VisionType.SHOOTER) == 7)) {
         robotContainer.getSubsystems().getLeds().setFadeAnimtation(255, 121, 198);
@@ -84,8 +101,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 0);
-    autonomousCommand = robotContainer.getAutonomousCommand();
+    // robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 0);
+    autonomousCommand = new WaitCommand(0.010).andThen(robotContainer.getAutonomousCommand());
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -123,7 +140,7 @@ public class Robot extends TimedRobot {
     else {
       robotContainer.getSubsystems().getVision().setPipeline(VisionType.SHOOTER, 2);
     }
-    // robotContainer.getSubsystems().getMusic().playSong("jackSparrow");
+    robotContainer.getSubsystems().getMusic().playSong("");
   }
 
   @Override

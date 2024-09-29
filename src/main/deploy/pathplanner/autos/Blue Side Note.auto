@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.75,
-      "y": 5.45
+      "x": 0.75,
+      "y": 7.0
     },
     "rotation": 0
   },
@@ -18,22 +18,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeNoteCommand"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Path - Red Get Note 2"
-                }
-              }
-            ]
+            "waitTime": 8.0
           }
         },
         {
@@ -43,16 +30,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Path - Red Shoot Note 2"
+                  "pathName": "Copy of Path - Blue Get Note 4"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeCommand"
+                  "name": "IntakeNoteCommand"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Path - Blue Shoot Note 4"
           }
         },
         {
